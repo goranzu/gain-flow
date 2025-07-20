@@ -33,6 +33,7 @@ app.UseExceptionHandler();
 if (app.Environment.IsDevelopment())
 {
     await app.ApplyMigrations();
+    await app.SeedDatabase();
 }
 
 app.UseEndpoints();

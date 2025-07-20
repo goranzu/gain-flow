@@ -6,6 +6,7 @@ namespace GainFlow.Api.Infrastructure.Data;
 public sealed class ApplicationDbContext : DbContext
 {
     public DbSet<User> Users { get; set; }
+    public DbSet<Exercise> Exercises { get; set; }
 
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
     {
