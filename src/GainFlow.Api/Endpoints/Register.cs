@@ -1,4 +1,5 @@
 using FluentValidation;
+using FluentValidation.Results;
 using GainFlow.Api.Common;
 using GainFlow.Api.Data;
 using GainFlow.Api.Data.Entities;
@@ -16,11 +17,22 @@ public sealed class Register : IEndpoint
             ApplicationDbContext applicationDbContext,
             CancellationToken cancellationToken,
             UserManager<IdentityUser> userManager,
-            RegisterCommand command) =>
+            RegisterCommand command,
+            IValidator<RegisterCommand> validator) =>
         {
-            await using IDbContextTransaction transaction = await applicationDbContext.Database.BeginTransactionAsync(cancellationToken);
+            ValidationResult? validationResult = await validator.ValidateAsync(command, cancellationToken);
+
+            if (!validationResult.IsValid)
+            {
+                Dictionary<string, string[]> errors = validationResult.Errors.ToProblemDetailErrors();
+                return Results.ValidationProblem(errors);
+            }
+
+            await using IDbContextTransaction transaction =
+                await applicationDbContext.Database.BeginTransactionAsync(cancellationToken);
             identityApplicationDbContext.Database.SetDbConnection(applicationDbContext.Database.GetDbConnection());
-            await identityApplicationDbContext.Database.UseTransactionAsync(transaction.GetDbTransaction(), cancellationToken);
+            await identityApplicationDbContext.Database.UseTransactionAsync(transaction.GetDbTransaction(),
+                cancellationToken);
 
             var identityUser = new IdentityUser { Email = command.Email, UserName = command.Email };
 
@@ -28,13 +40,10 @@ public sealed class Register : IEndpoint
 
             if (!identityResult.Succeeded)
             {
-                var extensions = new Dictionary<string, object?>()
-                {
-                    { "errors", identityResult.Errors.ToDictionary(e => e.Code, e => e.Description) }
-                };
-
-                return Results.Problem(detail: "Unable to register user, please try again",
-                    extensions: extensions, statusCode: StatusCodes.Status400BadRequest);
+                return Results.Problem(
+                    detail: "Unable to register user, please try again",
+                    extensions: identityResult.ToErrorsDictionary(),
+                    statusCode: StatusCodes.Status400BadRequest);
             }
 
             var user = new User
@@ -54,14 +63,21 @@ public sealed class Register : IEndpoint
 
     public sealed record RegisterCommand(string Email, string Password, string ConfirmPassword);
 
-     public sealed class RegisterCommandValidator : AbstractValidator<RegisterCommand>
-     {
-         public RegisterCommandValidator()
-         {
-             RuleFor(x => x.Email).EmailAddress();
-             RuleFor(x => x.Password).MinimumLength(3);
-             RuleFor(x => x.ConfirmPassword).MinimumLength(3);
-             RuleFor(x => x.Password).Matches(x => x.ConfirmPassword).WithMessage("Passwords do not match");
-         }
-     }
+    public sealed class RegisterCommandValidator : AbstractValidator<RegisterCommand>
+    {
+        public RegisterCommandValidator()
+        {
+            RuleFor(x => x.Email).EmailAddress();
+            RuleFor(x => x.Password)
+                .NotEmpty()
+                .MinimumLength(3);
+            RuleFor(x => x.ConfirmPassword)
+                .NotEmpty()
+                .MinimumLength(3);
+            RuleFor(x => x.Password)
+                .Equal(x => x.ConfirmPassword)
+                .WithMessage("Passwords do not match")
+                .When(x => !string.IsNullOrEmpty(x.ConfirmPassword));
+        }
+    }
 }
