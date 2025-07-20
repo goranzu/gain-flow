@@ -1,7 +1,11 @@
+using GainFlow.Api;
+
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddEndpoints();
 
 WebApplication app = builder.Build();
 
-app.MapGet("/", () => "Hello World!");
+app.UseEndpoints();
 
 await app.RunAsync();
