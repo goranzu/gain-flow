@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace GainFlow.Api.Features.Exercises;
 
-public sealed class GetExercises : IEndpoint
+public sealed class GetExercisesEndpoint : IEndpoint
 {
     public void AddPoint(IEndpointRouteBuilder endpointRouteBuilder)
     {
