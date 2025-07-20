@@ -9,8 +9,8 @@ public sealed class Exercise : AuditableEntity
 
     public ICollection<ExerciseMuscleGroup> MuscleGroups { get; set; } = new List<ExerciseMuscleGroup>();
 
-    public IEnumerable<MuscleGroup> PrimaryMuscles =>
-        MuscleGroups.Where(mg => mg.Role == MuscleRole.Primary).Select(mg => mg.MuscleGroup);
-    public IEnumerable<MuscleGroup> SecondaryMuscles =>
-        MuscleGroups.Where(mg => mg.Role == MuscleRole.Secondary).Select(mg => mg.MuscleGroup);
+    public IEnumerable<string> PrimaryMuscles =>
+        MuscleGroups.Where(mg => mg.Role == MuscleRole.Primary).Select(mg => mg.MuscleGroup.ToString());
+    public IEnumerable<string> SecondaryMuscles =>
+        MuscleGroups.Where(mg => mg.Role == MuscleRole.Secondary).Select(mg => mg.MuscleGroup.ToString());
 }
