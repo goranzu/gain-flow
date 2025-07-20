@@ -1,6 +1,7 @@
 using FluentValidation;
 using GainFlow.Api;
-using GainFlow.Api.Middleware;
+using GainFlow.Api.Infrastructure.Extensions;
+using GainFlow.Api.Infrastructure.Middleware;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 

@@ -1,7 +1,7 @@
-using GainFlow.Api.Data.Entities;
+using GainFlow.Api.Infrastructure.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace GainFlow.Api.Data;
+namespace GainFlow.Api.Infrastructure.Data;
 
 public sealed class ApplicationDbContext : DbContext
 {

@@ -1,9 +1,9 @@
-using GainFlow.Api.Common;
+using GainFlow.Api.Shared.Common;
 using Microsoft.AspNetCore.Identity;
 
-namespace GainFlow.Api.Endpoints;
+namespace GainFlow.Api.Features.Authentication.Logout;
 
-public sealed class Logout : IEndpoint
+public sealed class LogoutEndpoint : IEndpoint
 {
     public void AddPoint(IEndpointRouteBuilder endpointRouteBuilder)
     {

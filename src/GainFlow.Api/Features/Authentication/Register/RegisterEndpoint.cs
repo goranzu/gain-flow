@@ -1,15 +1,16 @@
 using FluentValidation;
 using FluentValidation.Results;
-using GainFlow.Api.Common;
-using GainFlow.Api.Data;
-using GainFlow.Api.Data.Entities;
+using GainFlow.Api.Infrastructure.Data;
+using GainFlow.Api.Infrastructure.Data.Entities;
+using GainFlow.Api.Infrastructure.Extensions;
+using GainFlow.Api.Shared.Common;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 
-namespace GainFlow.Api.Endpoints;
+namespace GainFlow.Api.Features.Authentication.Register;
 
-public sealed class Register : IEndpoint
+public sealed class RegisterEndpoint : IEndpoint
 {
     public void AddPoint(IEndpointRouteBuilder endpointRouteBuilder)
     {
@@ -59,25 +60,5 @@ public sealed class Register : IEndpoint
             await transaction.CommitAsync(cancellationToken);
             return Results.NoContent();
         });
-    }
-
-    public sealed record RegisterCommand(string Email, string Password, string ConfirmPassword);
-
-    public sealed class RegisterCommandValidator : AbstractValidator<RegisterCommand>
-    {
-        public RegisterCommandValidator()
-        {
-            RuleFor(x => x.Email).EmailAddress();
-            RuleFor(x => x.Password)
-                .NotEmpty()
-                .MinimumLength(3);
-            RuleFor(x => x.ConfirmPassword)
-                .NotEmpty()
-                .MinimumLength(3);
-            RuleFor(x => x.Password)
-                .Equal(x => x.ConfirmPassword)
-                .WithMessage("Passwords do not match")
-                .When(x => !string.IsNullOrEmpty(x.ConfirmPassword));
-        }
     }
 }

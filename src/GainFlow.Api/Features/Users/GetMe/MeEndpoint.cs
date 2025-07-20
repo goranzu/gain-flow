@@ -1,11 +1,11 @@
 using System.Security.Claims;
-using GainFlow.Api.Common;
-using GainFlow.Api.Data;
+using GainFlow.Api.Infrastructure.Data;
+using GainFlow.Api.Shared.Common;
 using Microsoft.EntityFrameworkCore;
 
-namespace GainFlow.Api.Endpoints;
+namespace GainFlow.Api.Features.Users.GetMe;
 
-public sealed class Me : IEndpoint
+public sealed class MeEndpoint : IEndpoint
 {
     public void AddPoint(IEndpointRouteBuilder endpointRouteBuilder)
     {
@@ -30,5 +30,4 @@ public sealed class Me : IEndpoint
             .RequireAuthorization();
     }
 
-    public sealed record UserResponse(string Id, string Email);
 }

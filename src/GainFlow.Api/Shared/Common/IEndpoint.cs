@@ -1,4 +1,4 @@
-namespace GainFlow.Api.Common;
+namespace GainFlow.Api.Shared.Common;
 
 public interface IEndpoint
 {

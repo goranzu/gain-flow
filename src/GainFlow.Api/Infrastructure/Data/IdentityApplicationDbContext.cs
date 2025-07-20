@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace GainFlow.Api.Data;
+namespace GainFlow.Api.Infrastructure.Data;
 
 public sealed class IdentityApplicationDbContext : IdentityDbContext<IdentityUser>
 {

@@ -1,11 +1,12 @@
 using FluentValidation;
 using FluentValidation.Results;
-using GainFlow.Api.Common;
+using GainFlow.Api.Infrastructure.Extensions;
+using GainFlow.Api.Shared.Common;
 using Microsoft.AspNetCore.Identity;
 
-namespace GainFlow.Api.Endpoints;
+namespace GainFlow.Api.Features.Authentication.Login;
 
-public sealed class Login : IEndpoint
+public sealed class LoginEndpoint : IEndpoint
 {
     public void AddPoint(IEndpointRouteBuilder endpointRouteBuilder)
     {
@@ -32,16 +33,5 @@ public sealed class Login : IEndpoint
 
                 return Results.NoContent();
             });
-    }
-
-    public sealed record LoginCommand(string Email, string Password);
-
-    public sealed class LoginCommandValidator : AbstractValidator<LoginCommand>
-    {
-        public LoginCommandValidator()
-        {
-            RuleFor(x => x.Email).EmailAddress();
-            RuleFor(x => x.Password).MinimumLength(3);
-        }
     }
 }

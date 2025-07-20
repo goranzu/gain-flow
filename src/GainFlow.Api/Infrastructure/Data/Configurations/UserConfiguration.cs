@@ -1,8 +1,8 @@
-using GainFlow.Api.Data.Entities;
+using GainFlow.Api.Infrastructure.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace GainFlow.Api.Data.Configurations;
+namespace GainFlow.Api.Infrastructure.Data.Configurations;
 
 public class UserConfiguration : IEntityTypeConfiguration<User>
 {
