@@ -1,4 +1,4 @@
-namespace GainFlow.Api.Infrastructure.Data.Entities;
+namespace GainFlow.Api.Shared.Domain.Entities;
 
 public abstract class AuditableEntity
 {

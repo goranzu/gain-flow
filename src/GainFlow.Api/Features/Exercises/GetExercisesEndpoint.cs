@@ -1,6 +1,5 @@
-using GainFlow.Api.Infrastructure.Data;
 using GainFlow.Api.Shared.Common;
-using Microsoft.AspNetCore.Mvc;
+using GainFlow.Api.Shared.Persistence;
 using Microsoft.EntityFrameworkCore;
 
 namespace GainFlow.Api.Features.Exercises;
@@ -11,14 +10,13 @@ public sealed class GetExercisesEndpoint : IEndpoint
     {
         endpointRouteBuilder.MapGet("/api/exercises", async (ApplicationDbContext applicationDbContext,
             CancellationToken cancellationToken,
-            [FromQuery] int page = 1,
-            [FromQuery] int pageSize = 10) =>
+            GetExercisesQuery query) =>
         {
-            IQueryable<ExerciseResponse> exercisesQuery = applicationDbContext.Exercises
+            IQueryable<GetExerciseResponse> exercisesQuery = applicationDbContext.Exercises
                 .AsNoTracking()
                 .OrderBy(e => e.Name)
                 .Include(ex => ex.MuscleGroups)
-                .Select(ex => new ExerciseResponse
+                .Select(ex => new GetExerciseResponse
                 {
                     Id = ex.Id,
                     Name = ex.Name,
@@ -26,12 +24,26 @@ public sealed class GetExercisesEndpoint : IEndpoint
                     SecondaryMuscles = ex.SecondaryMuscles.ToArray()
                 });
 
-            var response = await PaginatedResponse<ExerciseResponse>.Create(exercisesQuery,
-                page,
-                pageSize,
+            var response = await PaginatedResponse<GetExerciseResponse>.Create(exercisesQuery,
+                query.Page,
+                query.PageSize,
                 cancellationToken);
 
             return Results.Ok(response);
         });
+    }
+
+    public sealed class GetExercisesQuery
+    {
+        public int Page { get; set; } = 1;
+        public int PageSize { get; set; } = 10;
+    }
+
+    public sealed class GetExerciseResponse
+    {
+        public string Id { get; set; }
+        public string Name { get; set; }
+        public IEnumerable<string> PrimaryMuscles { get; set; }
+        public IEnumerable<string> SecondaryMuscles { get; set; }
     }
 }

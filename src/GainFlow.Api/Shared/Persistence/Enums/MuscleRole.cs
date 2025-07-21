@@ -1,4 +1,4 @@
-namespace GainFlow.Api.Infrastructure.Data.Enums;
+namespace GainFlow.Api.Shared.Persistence.Enums;
 
 public enum MuscleRole
 {

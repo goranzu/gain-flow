@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 
-namespace GainFlow.Api.Infrastructure.Middleware;
+namespace GainFlow.Api.Shared.Middleware;
 
 public sealed class GlobalExceptionHandler : IExceptionHandler
 {

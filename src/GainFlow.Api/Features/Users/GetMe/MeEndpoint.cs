@@ -1,6 +1,7 @@
 using System.Security.Claims;
 using GainFlow.Api.Infrastructure.Data;
 using GainFlow.Api.Shared.Common;
+using GainFlow.Api.Shared.Persistence;
 using Microsoft.EntityFrameworkCore;
 
 namespace GainFlow.Api.Features.Users.GetMe;

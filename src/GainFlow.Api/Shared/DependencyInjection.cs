@@ -1,12 +1,12 @@
 using System.Reflection;
 using FluentValidation.Results;
-using GainFlow.Api.Infrastructure.Data;
-using GainFlow.Api.Infrastructure.Data.Seeders;
 using GainFlow.Api.Shared.Common;
+using GainFlow.Api.Shared.Persistence;
+using GainFlow.Api.Shared.Persistence.Seeders;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
-namespace GainFlow.Api.Infrastructure.Extensions;
+namespace GainFlow.Api.Shared;
 
 public static class DependencyInjection
 {

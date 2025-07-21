@@ -1,9 +1,10 @@
 using FluentValidation;
 using FluentValidation.Results;
 using GainFlow.Api.Infrastructure.Data;
-using GainFlow.Api.Infrastructure.Data.Entities;
-using GainFlow.Api.Infrastructure.Extensions;
+using GainFlow.Api.Shared;
 using GainFlow.Api.Shared.Common;
+using GainFlow.Api.Shared.Domain.Entities;
+using GainFlow.Api.Shared.Persistence;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;

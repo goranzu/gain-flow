@@ -2,6 +2,7 @@
 using System;
 using GainFlow.Api.Data;
 using GainFlow.Api.Infrastructure.Data;
+using GainFlow.Api.Shared.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;

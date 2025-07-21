@@ -1,6 +1,6 @@
-using GainFlow.Api.Infrastructure.Data.Enums;
+using GainFlow.Api.Shared.Persistence.Enums;
 
-namespace GainFlow.Api.Infrastructure.Data.Entities;
+namespace GainFlow.Api.Shared.Domain.Entities;
 
 public sealed class Exercise : AuditableEntity
 {

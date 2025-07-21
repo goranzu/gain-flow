@@ -1,8 +1,8 @@
-using GainFlow.Api.Infrastructure.Data.Entities;
-using GainFlow.Api.Infrastructure.Data.Enums;
+using GainFlow.Api.Shared.Domain.Entities;
+using GainFlow.Api.Shared.Persistence.Enums;
 using Microsoft.EntityFrameworkCore;
 
-namespace GainFlow.Api.Infrastructure.Data.Seeders;
+namespace GainFlow.Api.Shared.Persistence.Seeders;
 
 public static class ExerciseSeeder
 {

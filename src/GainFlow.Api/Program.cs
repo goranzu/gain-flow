@@ -1,7 +1,7 @@
 using FluentValidation;
 using GainFlow.Api;
-using GainFlow.Api.Infrastructure.Extensions;
-using GainFlow.Api.Infrastructure.Middleware;
+using GainFlow.Api.Shared;
+using GainFlow.Api.Shared.Middleware;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
@@ -28,13 +28,18 @@ WebApplication app = builder.Build();
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.UseExceptionHandler();
-
 if (app.Environment.IsDevelopment())
 {
     await app.ApplyMigrations();
     await app.SeedDatabase();
+    app.UseDeveloperExceptionPage();
 }
+else
+{
+    app.UseExceptionHandler();
+}
+
+app.UseStatusCodePages();
 
 app.UseEndpoints();
 

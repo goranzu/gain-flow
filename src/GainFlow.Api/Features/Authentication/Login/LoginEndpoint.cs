@@ -1,6 +1,6 @@
 using FluentValidation;
 using FluentValidation.Results;
-using GainFlow.Api.Infrastructure.Extensions;
+using GainFlow.Api.Shared;
 using GainFlow.Api.Shared.Common;
 using Microsoft.AspNetCore.Identity;
 
