@@ -1,6 +1,7 @@
 using System.Reflection;
 using FluentValidation.Results;
 using GainFlow.Api.Shared.Abstractions;
+using GainFlow.Api.Shared.Middleware;
 using GainFlow.Api.Shared.Persistence;
 using GainFlow.Api.Shared.Persistence.Seeders;
 using Microsoft.AspNetCore.Identity;
@@ -63,6 +64,43 @@ public static class DependencyInjection
 
         services.AddIdentity<IdentityUser, IdentityRole>()
             .AddEntityFrameworkStores<IdentityApplicationDbContext>();
+
+        return services;
+    }
+
+    public static IServiceCollection AddQueryHandlers(this IServiceCollection services)
+    {
+        services.Scan(scan =>
+            scan.FromAssembliesOf(typeof(Program))
+                .AddClasses(classes => classes.AssignableTo(typeof(IQueryHandler<,>)), publicOnly: false)
+                .AsImplementedInterfaces().WithScopedLifetime());
+
+        return services;
+    }
+
+    public static IServiceCollection AddCommandHandlers(this IServiceCollection services)
+    {
+        services.Scan(scan =>
+            scan.FromAssembliesOf(typeof(Program))
+                .AddClasses(classes => classes.AssignableTo(typeof(ICommandHandler<>)), publicOnly: false)
+                .AsImplementedInterfaces().WithScopedLifetime()
+                .AddClasses(classes => classes.AssignableTo(typeof(ICommandHandler<,>)), publicOnly: false)
+                .AsImplementedInterfaces().WithScopedLifetime());
+
+        return services;
+    }
+
+    public static IServiceCollection AddErrorHandling(this IServiceCollection services)
+    {
+        services.AddProblemDetails(options =>
+        {
+            options.CustomizeProblemDetails = context =>
+            {
+                context.ProblemDetails.Extensions.Add("requestId", context.HttpContext.TraceIdentifier);
+            };
+        });
+
+        services.AddExceptionHandler<GlobalExceptionHandler>();
 
         return services;
     }
@@ -139,5 +177,4 @@ public static class DependencyInjection
             { "errors", identityResult.Errors.ToDictionary(e => e.Code.ToLowerInvariant(), e => e.Description) }
         };
     }
-
 }
