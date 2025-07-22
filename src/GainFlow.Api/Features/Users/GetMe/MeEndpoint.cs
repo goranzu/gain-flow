@@ -1,6 +1,5 @@
 using System.Security.Claims;
-using GainFlow.Api.Infrastructure.Data;
-using GainFlow.Api.Shared.Common;
+using GainFlow.Api.Shared.Abstractions;
 using GainFlow.Api.Shared.Persistence;
 using Microsoft.EntityFrameworkCore;
 
@@ -8,7 +7,7 @@ namespace GainFlow.Api.Features.Users.GetMe;
 
 public sealed class MeEndpoint : IEndpoint
 {
-    public void AddPoint(IEndpointRouteBuilder endpointRouteBuilder)
+    public void AddEndpoint(IEndpointRouteBuilder endpointRouteBuilder)
     {
         endpointRouteBuilder.MapGet("/api/me",
                 async (HttpContext httpContext, ApplicationDbContext applicationDbContext) =>

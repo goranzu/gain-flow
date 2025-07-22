@@ -1,11 +1,11 @@
-using GainFlow.Api.Shared.Common;
+using GainFlow.Api.Shared.Abstractions;
 using Microsoft.AspNetCore.Identity;
 
 namespace GainFlow.Api.Features.Authentication.Logout;
 
 public sealed class LogoutEndpoint : IEndpoint
 {
-    public void AddPoint(IEndpointRouteBuilder endpointRouteBuilder)
+    public void AddEndpoint(IEndpointRouteBuilder endpointRouteBuilder)
     {
         endpointRouteBuilder.MapPost("/api/logout", async (SignInManager<IdentityUser> signInManager) =>
             {

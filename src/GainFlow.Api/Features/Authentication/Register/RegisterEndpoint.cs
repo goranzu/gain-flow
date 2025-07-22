@@ -1,8 +1,7 @@
 using FluentValidation;
 using FluentValidation.Results;
-using GainFlow.Api.Infrastructure.Data;
 using GainFlow.Api.Shared;
-using GainFlow.Api.Shared.Common;
+using GainFlow.Api.Shared.Abstractions;
 using GainFlow.Api.Shared.Domain.Entities;
 using GainFlow.Api.Shared.Persistence;
 using Microsoft.AspNetCore.Identity;
@@ -13,7 +12,7 @@ namespace GainFlow.Api.Features.Authentication.Register;
 
 public sealed class RegisterEndpoint : IEndpoint
 {
-    public void AddPoint(IEndpointRouteBuilder endpointRouteBuilder)
+    public void AddEndpoint(IEndpointRouteBuilder endpointRouteBuilder)
     {
         endpointRouteBuilder.MapPost("/api/register", async (IdentityApplicationDbContext identityApplicationDbContext,
             ApplicationDbContext applicationDbContext,

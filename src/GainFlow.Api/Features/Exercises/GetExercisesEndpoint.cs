@@ -1,49 +1,26 @@
-using GainFlow.Api.Shared.Common;
-using GainFlow.Api.Shared.Persistence;
-using Microsoft.EntityFrameworkCore;
+using GainFlow.Api.Shared.Abstractions;
 
 namespace GainFlow.Api.Features.Exercises;
 
 public sealed class GetExercisesEndpoint : IEndpoint
 {
-    public void AddPoint(IEndpointRouteBuilder endpointRouteBuilder)
+    public void AddEndpoint(IEndpointRouteBuilder endpointRouteBuilder)
     {
-        endpointRouteBuilder.MapGet("/api/exercises", async (ApplicationDbContext applicationDbContext,
+        endpointRouteBuilder.MapGet("/api/exercises", async (
             CancellationToken cancellationToken,
-            GetExercisesQuery query) =>
+            IQueryHandler<GetExercisesQuery, PaginatedResponse<GetExerciseResponse>> handler,
+            int page = 1,
+            int pageSize = 10) =>
         {
-            IQueryable<GetExerciseResponse> exercisesQuery = applicationDbContext.Exercises
-                .AsNoTracking()
-                .OrderBy(e => e.Name)
-                .Include(ex => ex.MuscleGroups)
-                .Select(ex => new GetExerciseResponse
-                {
-                    Id = ex.Id,
-                    Name = ex.Name,
-                    PrimaryMuscles = ex.PrimaryMuscles.ToArray(),
-                    SecondaryMuscles = ex.SecondaryMuscles.ToArray()
-                });
+            var query = new GetExercisesQuery
+            {
+                Page = page,
+                PageSize = pageSize
+            };
 
-            var response = await PaginatedResponse<GetExerciseResponse>.Create(exercisesQuery,
-                query.Page,
-                query.PageSize,
-                cancellationToken);
+            PaginatedResponse<GetExerciseResponse> result = await handler.Handle(query, cancellationToken);
 
-            return Results.Ok(response);
+            return Results.Ok(result);
         });
-    }
-
-    public sealed class GetExercisesQuery
-    {
-        public int Page { get; set; } = 1;
-        public int PageSize { get; set; } = 10;
-    }
-
-    public sealed class GetExerciseResponse
-    {
-        public string Id { get; set; }
-        public string Name { get; set; }
-        public IEnumerable<string> PrimaryMuscles { get; set; }
-        public IEnumerable<string> SecondaryMuscles { get; set; }
     }
 }

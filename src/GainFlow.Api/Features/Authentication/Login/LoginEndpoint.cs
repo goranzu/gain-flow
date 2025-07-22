@@ -1,14 +1,14 @@
 using FluentValidation;
 using FluentValidation.Results;
 using GainFlow.Api.Shared;
-using GainFlow.Api.Shared.Common;
+using GainFlow.Api.Shared.Abstractions;
 using Microsoft.AspNetCore.Identity;
 
 namespace GainFlow.Api.Features.Authentication.Login;
 
 public sealed class LoginEndpoint : IEndpoint
 {
-    public void AddPoint(IEndpointRouteBuilder endpointRouteBuilder)
+    public void AddEndpoint(IEndpointRouteBuilder endpointRouteBuilder)
     {
         endpointRouteBuilder.MapPost("/api/login",
             async (SignInManager<IdentityUser> signInManager, LoginCommand command,

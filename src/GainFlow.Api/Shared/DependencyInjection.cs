@@ -1,6 +1,6 @@
 using System.Reflection;
 using FluentValidation.Results;
-using GainFlow.Api.Shared.Common;
+using GainFlow.Api.Shared.Abstractions;
 using GainFlow.Api.Shared.Persistence;
 using GainFlow.Api.Shared.Persistence.Seeders;
 using Microsoft.AspNetCore.Identity;
@@ -73,7 +73,7 @@ public static class DependencyInjection
 
         foreach (IEndpoint endpoint in endpoints)
         {
-            endpoint.AddPoint(app);
+            endpoint.AddEndpoint(app);
         }
 
         return app;

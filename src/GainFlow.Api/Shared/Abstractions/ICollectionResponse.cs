@@ -1,4 +1,4 @@
-namespace GainFlow.Api.Shared.Common;
+namespace GainFlow.Api.Shared.Abstractions;
 
 public interface ICollectionResponse<T>
 {

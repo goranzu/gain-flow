@@ -1,6 +1,7 @@
 using FluentValidation;
-using GainFlow.Api;
+using GainFlow.Api.Features.Exercises;
 using GainFlow.Api.Shared;
+using GainFlow.Api.Shared.Abstractions;
 using GainFlow.Api.Shared.Middleware;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
@@ -22,6 +23,8 @@ builder.Services.AddProblemDetails(options =>
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddAuthorization();
 builder.Services.AddAuthentication();
+
+builder.Services.AddScoped<IQueryHandler<GetExercisesQuery, PaginatedResponse<GetExerciseResponse>>, GetExercisesQueryHandler>();
 
 WebApplication app = builder.Build();
 
