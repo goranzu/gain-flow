@@ -21,7 +21,7 @@ public sealed class RegisterEndpoint : IEndpoint
             RegisterCommand command,
             IValidator<RegisterCommand> validator) =>
         {
-            ValidationResult? validationResult = await validator.ValidateAsync(command, cancellationToken);
+            ValidationResult? validationResult = validator.Validate(command);
 
             if (!validationResult.IsValid)
             {
