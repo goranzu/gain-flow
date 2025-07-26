@@ -16,6 +16,10 @@ builder.Services
     .AddAuthentication();
 
 builder.Services.AddHttpContextAccessor();
+builder.Services.AddSpaStaticFiles(configuration =>
+{
+    configuration.RootPath = "wwwroot";
+});
 
 WebApplication app = builder.Build();
 
@@ -31,7 +35,17 @@ if (app.Environment.IsDevelopment())
 else
 {
     app.UseExceptionHandler();
+    app.UseSpaStaticFiles();
 }
+
+app.UseSpa(spaOptions =>
+{
+   spaOptions.Options.SourcePath = "../react-client";
+   if (app.Environment.IsDevelopment())
+   {
+       spaOptions.UseProxyToSpaDevelopmentServer("http://localhost:3000");
+   }
+});
 
 app.UseStatusCodePages();
 
