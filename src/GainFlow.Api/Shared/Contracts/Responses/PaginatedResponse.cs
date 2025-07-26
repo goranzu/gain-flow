@@ -1,6 +1,7 @@
+using GainFlow.Api.Shared.Abstractions;
 using Microsoft.EntityFrameworkCore;
 
-namespace GainFlow.Api.Shared.Abstractions;
+namespace GainFlow.Api.Shared.Contracts.Responses;
 
 public class PaginatedResponse<T> : ICollectionResponse<T>
 {
