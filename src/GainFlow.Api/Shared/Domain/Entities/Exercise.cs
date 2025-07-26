@@ -11,6 +11,54 @@ public sealed class Exercise : AuditableEntity
 
     public IEnumerable<string> PrimaryMuscles =>
         MuscleGroups.Where(mg => mg.Role == MuscleRole.Primary).Select(mg => mg.MuscleGroup.ToString());
+
     public IEnumerable<string> SecondaryMuscles =>
         MuscleGroups.Where(mg => mg.Role == MuscleRole.Secondary).Select(mg => mg.MuscleGroup.ToString());
+
+    public void UpdatePrimaryMuscles(string[]? requestedMuscles)
+        => UpdateMuscleGroups(MuscleRole.Primary, requestedMuscles);
+
+    public void UpdateSecondaryMuscles(string[]? requestedMuscles)
+        => UpdateMuscleGroups(MuscleRole.Secondary, requestedMuscles);
+    private void UpdateMuscleGroups(MuscleRole role, string[]? requestedMuscles)
+    {
+        if (requestedMuscles is null)
+        {
+            return;
+        }
+
+        var requestedMuscleGroups = requestedMuscles
+            .Select(m => Enum.Parse<MuscleGroup>(m, ignoreCase: true))
+            .ToHashSet();
+
+        var existingMuscleGroups = MuscleGroups
+            .Where(eg => eg.Role == role)
+            .Select(eg => eg.MuscleGroup)
+            .ToHashSet();
+
+        var toRemove = MuscleGroups
+            .Where(mg => mg.Role == role && !requestedMuscleGroups.Contains(mg.MuscleGroup))
+            .ToList();
+
+        foreach (ExerciseMuscleGroup mg in toRemove)
+        {
+            MuscleGroups.Remove(mg);
+        }
+
+        ExerciseMuscleGroup[] toAdd = requestedMuscleGroups
+            .Where(muscle => !existingMuscleGroups.Contains(muscle))
+            .Select(muscle => new ExerciseMuscleGroup
+            {
+                Id = $"eg_{Guid.CreateVersion7()}",
+                ExerciseId = Id,
+                MuscleGroup = muscle,
+                Role = role
+            })
+            .ToArray();
+
+        foreach (ExerciseMuscleGroup exerciseMuscleGroup in toAdd)
+        {
+            MuscleGroups.Add(exerciseMuscleGroup);
+        }
+    }
 }
