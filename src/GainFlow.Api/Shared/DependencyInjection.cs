@@ -4,6 +4,7 @@ using GainFlow.Api.Shared.Abstractions;
 using GainFlow.Api.Shared.Middleware;
 using GainFlow.Api.Shared.Persistence;
 using GainFlow.Api.Shared.Persistence.Seeders;
+using GainFlow.Api.Shared.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -87,6 +88,12 @@ public static class DependencyInjection
                 .AddClasses(classes => classes.AssignableTo(typeof(ICommandHandler<,>)), publicOnly: false)
                 .AsImplementedInterfaces().WithScopedLifetime());
 
+        return services;
+    }
+
+    public static IServiceCollection AddApplicationServices(this IServiceCollection services)
+    {
+        services.AddScoped<ICurrentUserService, CurrentUserService>();
         return services;
     }
 

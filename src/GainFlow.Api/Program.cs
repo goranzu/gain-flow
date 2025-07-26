@@ -10,9 +10,12 @@ builder.Services
     .AddValidatorsFromAssemblyContaining<Program>()
     .AddQueryHandlers()
     .AddCommandHandlers()
+    .AddApplicationServices()
     .AddErrorHandling()
     .AddAuthorization()
     .AddAuthentication();
+
+builder.Services.AddHttpContextAccessor();
 
 WebApplication app = builder.Build();
 

@@ -51,7 +51,6 @@ public sealed class RegisterEndpoint : IEndpoint
             {
                 Id = $"u_{Guid.CreateVersion7()}",
                 Email = command.Email,
-                CreatedAt = DateTimeOffset.UtcNow,
                 IdentityId = identityUser.Id
             };
 

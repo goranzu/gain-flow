@@ -1,0 +1,20 @@
+using System.Security.Claims;
+
+namespace GainFlow.Api.Shared.Services;
+
+public interface ICurrentUserService
+{
+    public string? UserId { get; }
+}
+
+public sealed class CurrentUserService : ICurrentUserService
+{
+    private readonly IHttpContextAccessor _httpContextAccessor;
+
+    public CurrentUserService(IHttpContextAccessor httpContextAccessor)
+    {
+        _httpContextAccessor = httpContextAccessor;
+    }
+
+    public string? UserId => _httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+}
