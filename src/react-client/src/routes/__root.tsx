@@ -15,12 +15,14 @@ interface MyRouterContext {
 export const Route = createRootRouteWithContext<MyRouterContext>()({
     component: () => (
         <HeroUIProvider>
-            <Header/>
+            <div className="dark text-foreground bg-background h-screen">
+                <Header/>
 
-            <Outlet/>
-            <TanStackRouterDevtools/>
+                <Outlet/>
+                <TanStackRouterDevtools/>
 
-            <TanStackQueryLayout/>
+                <TanStackQueryLayout/>
+            </div>
         </HeroUIProvider>
     ),
 })
