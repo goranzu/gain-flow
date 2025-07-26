@@ -20,6 +20,7 @@ public sealed class Exercise : AuditableEntity
 
     public void UpdateSecondaryMuscles(string[]? requestedMuscles)
         => UpdateMuscleGroups(MuscleRole.Secondary, requestedMuscles);
+
     private void UpdateMuscleGroups(MuscleRole role, string[]? requestedMuscles)
     {
         if (requestedMuscles is null)
@@ -59,6 +60,21 @@ public sealed class Exercise : AuditableEntity
         foreach (ExerciseMuscleGroup exerciseMuscleGroup in toAdd)
         {
             MuscleGroups.Add(exerciseMuscleGroup);
+        }
+
+        ValidateMuscleGroupState();
+    }
+
+    private void ValidateMuscleGroupState()
+    {
+        if (PrimaryMuscles.Intersect(SecondaryMuscles).Any())
+        {
+            throw new InvalidOperationException("Primary and secondary muscle groups cannot overlap.");
+        }
+
+        if (!PrimaryMuscles.Any())
+        {
+            throw new InvalidOperationException("At least one primary muscle group is required.");
         }
     }
 }
