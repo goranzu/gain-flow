@@ -3,6 +3,7 @@ using FluentValidation.Results;
 using GainFlow.Api.Shared;
 using GainFlow.Api.Shared.Abstractions;
 using GainFlow.Api.Shared.Domain.Entities;
+using GainFlow.Api.Shared.Extensions;
 using GainFlow.Api.Shared.Persistence;
 using GainFlow.Api.Shared.Persistence.Enums;
 

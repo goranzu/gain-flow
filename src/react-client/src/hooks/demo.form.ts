@@ -1,22 +1,19 @@
-import { createFormHook } from '@tanstack/react-form'
+import {createFormHook} from '@tanstack/react-form'
+import {fieldContext, formContext} from './demo.form-context'
+import {Input} from "@heroui/input";
+import {Button} from "@heroui/react";
 
-import {
-  Select,
-  SubscribeButton,
-  TextArea,
-  TextField,
-} from '../components/demo.FormComponents'
-import { fieldContext, formContext } from './demo.form-context'
-
-export const { useAppForm } = createFormHook({
-  fieldComponents: {
-    TextField,
-    Select,
-    TextArea,
-  },
-  formComponents: {
-    SubscribeButton,
-  },
-  fieldContext,
-  formContext,
+export const {useAppForm} = createFormHook({
+    fieldComponents: {
+        Input,
+        // TextField,
+        // Select,
+        // TextArea,
+    },
+    formComponents: {
+        // SubscribeButton,
+        Button,
+    },
+    fieldContext,
+    formContext,
 })

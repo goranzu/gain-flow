@@ -2,6 +2,7 @@ using FluentValidation;
 using FluentValidation.Results;
 using GainFlow.Api.Shared;
 using GainFlow.Api.Shared.Abstractions;
+using GainFlow.Api.Shared.Extensions;
 using Microsoft.AspNetCore.Identity;
 
 namespace GainFlow.Api.Features.Authentication.Login;

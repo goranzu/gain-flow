@@ -1,9 +1,11 @@
 using FluentValidation;
-using GainFlow.Api.Shared;
+using GainFlow.Api.Shared.Extensions;
+using GainFlow.Api.Shared.Persistence;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 builder.Services
+    .AddHttpContextAccessor()
     .AddEndpoints()
     .AddPersistence(builder.Configuration)
     .AddIdentity(builder.Environment)
@@ -12,14 +14,10 @@ builder.Services
     .AddCommandHandlers()
     .AddApplicationServices()
     .AddErrorHandling()
+    .AddSpa()
     .AddAuthorization()
     .AddAuthentication();
 
-builder.Services.AddHttpContextAccessor();
-builder.Services.AddSpaStaticFiles(configuration =>
-{
-    configuration.RootPath = "wwwroot";
-});
 
 WebApplication app = builder.Build();
 
@@ -38,17 +36,17 @@ else
     app.UseSpaStaticFiles();
 }
 
-app.UseSpa(spaOptions =>
-{
-   spaOptions.Options.SourcePath = "../react-client";
-   if (app.Environment.IsDevelopment())
-   {
-       spaOptions.UseProxyToSpaDevelopmentServer("http://localhost:3000");
-   }
-});
-
 app.UseStatusCodePages();
 
 app.UseEndpoints();
+
+app.UseSpa(spaOptions =>
+{
+    spaOptions.Options.SourcePath = "../react-client";
+    if (app.Environment.IsDevelopment())
+    {
+        spaOptions.UseProxyToSpaDevelopmentServer("http://localhost:3000");
+    }
+});
 
 await app.RunAsync();

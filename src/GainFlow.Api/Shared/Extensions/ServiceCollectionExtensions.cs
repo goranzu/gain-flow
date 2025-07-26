@@ -1,16 +1,14 @@
 using System.Reflection;
-using FluentValidation.Results;
 using GainFlow.Api.Shared.Abstractions;
 using GainFlow.Api.Shared.Middleware;
 using GainFlow.Api.Shared.Persistence;
-using GainFlow.Api.Shared.Persistence.Seeders;
 using GainFlow.Api.Shared.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
-namespace GainFlow.Api.Shared;
+namespace GainFlow.Api.Shared.Extensions;
 
-public static class DependencyInjection
+public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddEndpoints(this IServiceCollection services)
     {
@@ -112,76 +110,12 @@ public static class DependencyInjection
         return services;
     }
 
-    public static WebApplication UseEndpoints(this WebApplication app)
+    public static IServiceCollection AddSpa(this IServiceCollection services)
     {
-        IEnumerable<IEndpoint> endpoints = app.Services.GetRequiredService<IEnumerable<IEndpoint>>();
-
-        foreach (IEndpoint endpoint in endpoints)
+        services.AddSpaStaticFiles(configuration =>
         {
-            endpoint.AddEndpoint(app);
-        }
-
-        return app;
-    }
-
-    public static async Task ApplyMigrations(this WebApplication app)
-    {
-        using IServiceScope scope = app.Services.CreateScope();
-        IdentityApplicationDbContext identityContext =
-            scope.ServiceProvider.GetRequiredService<IdentityApplicationDbContext>();
-        ApplicationDbContext applicationContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-
-        try
-        {
-            await identityContext.Database.MigrateAsync();
-            await applicationContext.Database.MigrateAsync();
-            app.Logger.LogInformation("Migrations applied");
-        }
-        catch (Exception e)
-        {
-            app.Logger.LogError(e, "Error applying migrations");
-            throw;
-        }
-    }
-
-    public static async Task SeedDatabase(this WebApplication app)
-    {
-        using IServiceScope scope = app.Services.CreateScope();
-        ApplicationDbContext applicationContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-
-        try
-        {
-            await applicationContext.Database.EnsureCreatedAsync();
-
-            if ((await applicationContext.Database.GetPendingMigrationsAsync()).Any())
-            {
-                await applicationContext.Database.MigrateAsync();
-                app.Logger.LogInformation("Migrations applied");
-            }
-
-            await ExerciseSeeder.SeedAsync(applicationContext);
-            app.Logger.LogInformation("Database seeded successfully");
-        }
-        catch (Exception e)
-        {
-            app.Logger.LogError(e, "Error occured while seeding database");
-            throw;
-        }
-    }
-
-    public static Dictionary<string, string[]> ToProblemDetailErrors(
-        this List<ValidationFailure> validationFailures)
-    {
-        var errors = validationFailures.GroupBy(g => g.PropertyName)
-            .ToDictionary(g => g.Key.ToLowerInvariant(), g => g.Select(e => e.ErrorMessage).ToArray());
-        return errors;
-    }
-
-    public static Dictionary<string, object?> ToErrorsDictionary(this IdentityResult identityResult)
-    {
-        return new Dictionary<string, object?>
-        {
-            { "errors", identityResult.Errors.ToDictionary(e => e.Code.ToLowerInvariant(), e => e.Description) }
-        };
+            configuration.RootPath = "wwwroot";
+        });
+        return services;
     }
 }
