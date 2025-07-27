@@ -1,9 +1,10 @@
+import { useAuth } from "@/context/auth.tsx"
 import { Card, CardBody, CardHeader } from "@heroui/card"
 import { Divider, Form, Link } from "@heroui/react"
-import { createFileRoute } from "@tanstack/react-router"
+import { createFileRoute, useRouter } from "@tanstack/react-router"
 import { z } from "zod"
 
-import { useAppForm } from "@/hooks/demo.form.ts"
+import { useAppForm } from "@/hooks/form.ts"
 
 export const Route = createFileRoute("/login")({
   component: LoginComponent,
@@ -15,18 +16,21 @@ const schema = z.object({
 })
 
 function LoginComponent() {
+  const { login, serverError } = useAuth()
+  const router = useRouter()
   const form = useAppForm({
     defaultValues: {
       email: "",
       password: "",
     },
     validators: {
-      onBlur: schema,
+      onChange: schema,
     },
-    onSubmit: ({ value }) => {
-      console.log(value)
-      // Show success message
-      alert("Form submitted successfully!")
+    onSubmit: async ({ value }) => {
+      const success = await login(value.email, value.password)
+      if (success) {
+        void router.navigate("/dashboard")
+      }
     },
   })
 
@@ -44,10 +48,10 @@ function LoginComponent() {
         <Divider />
         <CardBody className="px-8 py-6">
           <Form
-            onSubmit={(e) => {
+            onSubmit={async (e) => {
               e.preventDefault()
               e.stopPropagation()
-              form.handleSubmit()
+              await form.handleSubmit()
             }}
             className="space-y-6"
           >
@@ -62,10 +66,17 @@ function LoginComponent() {
                   name="email"
                   variant="bordered"
                   size="lg"
-                  classNames={{
-                    input: "text-base",
-                    inputWrapper: "h-12",
-                  }}
+                  value={field.state.value}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                  onBlur={field.handleBlur}
+                  isInvalid={!field.state.meta.isValid}
+                  errorMessage={field.state.meta.errors
+                    .map((error) =>
+                      typeof error === "string"
+                        ? error
+                        : error?.message || String(error),
+                    )
+                    .join(", ")}
                 />
               )}
             </form.AppField>
@@ -81,10 +92,17 @@ function LoginComponent() {
                   name="password"
                   variant="bordered"
                   size="lg"
-                  classNames={{
-                    input: "text-base",
-                    inputWrapper: "h-12",
-                  }}
+                  value={field.state.value}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                  onBlur={field.handleBlur}
+                  isInvalid={!field.state.meta.isValid}
+                  errorMessage={field.state.meta.errors
+                    .map((error) =>
+                      typeof error === "string"
+                        ? error
+                        : error?.message || String(error),
+                    )
+                    .join(", ")}
                 />
               )}
             </form.AppField>
@@ -99,17 +117,24 @@ function LoginComponent() {
               </Link>
             </div>
 
-            <form.AppForm>
-              <form.Button
-                color="primary"
-                type="submit"
-                size="lg"
-                className="h-12 w-full font-semibold"
-                radius="lg"
-              >
-                Sign In
-              </form.Button>
-            </form.AppForm>
+            <form.Subscribe
+              selector={(state) => [state.isSubmitting, state.canSubmit]}
+            >
+              {([isSubmitting, canSubmit]) => (
+                <form.AppForm>
+                  <form.Button
+                    color="primary"
+                    type="submit"
+                    size="lg"
+                    className="h-12 w-full font-semibold"
+                    radius="lg"
+                    isDisabled={isSubmitting || !canSubmit}
+                  >
+                    Sign In
+                  </form.Button>
+                </form.AppForm>
+              )}
+            </form.Subscribe>
 
             <div className="text-small text-default-500 w-full text-center">
               Don't have an account?{" "}
@@ -122,6 +147,11 @@ function LoginComponent() {
               </Link>
             </div>
           </Form>
+          {serverError.length > 0 && (
+            <p className="text-small text-danger mt-4 text-center">
+              {serverError}
+            </p>
+          )}
         </CardBody>
       </Card>
     </div>

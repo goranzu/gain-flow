@@ -40,13 +40,4 @@ app.UseStatusCodePages();
 
 app.UseEndpoints();
 
-app.UseSpa(spaOptions =>
-{
-    spaOptions.Options.SourcePath = "../react-client";
-    if (app.Environment.IsDevelopment())
-    {
-        spaOptions.UseProxyToSpaDevelopmentServer("http://localhost:3000");
-    }
-});
-
 await app.RunAsync();

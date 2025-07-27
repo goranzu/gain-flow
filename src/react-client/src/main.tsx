@@ -9,11 +9,14 @@ import { routeTree } from "./routeTree.gen"
 
 import "./styles.css"
 
+import { AuthProvider, useAuth } from "@/context/auth.tsx"
+
 // Create a new router instance
 const router = createRouter({
   routeTree,
   context: {
     ...TanStackQueryProvider.getContext(),
+    auth: undefined!,
   },
   defaultPreload: "intent",
   scrollRestoration: true,
@@ -28,6 +31,19 @@ declare module "@tanstack/react-router" {
   }
 }
 
+function InnerApp() {
+  const auth = useAuth()
+  return <RouterProvider router={router} context={{ auth }} />
+}
+
+function App() {
+  return (
+    <AuthProvider>
+      <InnerApp />
+    </AuthProvider>
+  )
+}
+
 // Render the app
 const rootElement = document.getElementById("app")
 if (rootElement && !rootElement.innerHTML) {
@@ -35,7 +51,7 @@ if (rootElement && !rootElement.innerHTML) {
   root.render(
     <StrictMode>
       <TanStackQueryProvider.Provider>
-        <RouterProvider router={router} />
+        <App />
       </TanStackQueryProvider.Provider>
     </StrictMode>,
   )

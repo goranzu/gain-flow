@@ -1,3 +1,4 @@
+import type { AuthContext } from "@/context/auth.tsx"
 import { HeroUIProvider } from "@heroui/react"
 import type { QueryClient } from "@tanstack/react-query"
 import {
@@ -15,6 +16,7 @@ import TanStackQueryLayout from "../integrations/tanstack-query/layout.tsx"
 
 interface MyRouterContext {
   queryClient: QueryClient
+  auth: AuthContext
 }
 
 declare module "@react-types/shared" {

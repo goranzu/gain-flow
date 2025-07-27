@@ -1,5 +1,6 @@
 using System.Security.Claims;
 using GainFlow.Api.Shared.Abstractions;
+using GainFlow.Api.Shared.Contracts.Responses;
 using GainFlow.Api.Shared.Persistence;
 using Microsoft.EntityFrameworkCore;
 

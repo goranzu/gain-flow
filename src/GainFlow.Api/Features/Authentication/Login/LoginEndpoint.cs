@@ -1,9 +1,12 @@
 using FluentValidation;
 using FluentValidation.Results;
-using GainFlow.Api.Shared;
 using GainFlow.Api.Shared.Abstractions;
+using GainFlow.Api.Shared.Contracts.Responses;
+using GainFlow.Api.Shared.Domain.Entities;
 using GainFlow.Api.Shared.Extensions;
+using GainFlow.Api.Shared.Persistence;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace GainFlow.Api.Features.Authentication.Login;
 
@@ -14,7 +17,8 @@ public sealed class LoginEndpoint : IEndpoint
         endpointRouteBuilder.MapPost("/api/login",
             async (SignInManager<IdentityUser> signInManager, LoginCommand command,
                 IValidator<LoginCommand> validator,
-                CancellationToken cancellationToken) =>
+                CancellationToken cancellationToken,
+                ApplicationDbContext dbContext) =>
             {
                 ValidationResult? validationResult = await validator.ValidateAsync(command, cancellationToken);
                 if (!validationResult.IsValid)
@@ -32,7 +36,18 @@ public sealed class LoginEndpoint : IEndpoint
                         statusCode: StatusCodes.Status400BadRequest);
                 }
 
-                return Results.NoContent();
+                User? user = await dbContext.Users
+                    .FirstOrDefaultAsync(u => u.Email == command.Email, cancellationToken: cancellationToken);
+
+                if (user is null)
+                {
+                    return Results.Problem(detail: "Invalid credentials. Please try again.",
+                        statusCode: StatusCodes.Status400BadRequest);
+                }
+
+                var response = new UserResponse(user.Id, user.Email);
+
+                return Results.Ok(response);
             });
     }
 }
