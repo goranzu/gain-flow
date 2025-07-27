@@ -1,9 +1,9 @@
-import { defineConfig } from 'vite'
-import viteReact from '@vitejs/plugin-react'
-import tailwindcss from '@tailwindcss/vite'
+import tailwindcss from "@tailwindcss/vite"
+import viteReact from "@vitejs/plugin-react"
+import { defineConfig } from "vite"
 
-import { TanStackRouterVite } from '@tanstack/router-plugin/vite'
-import { resolve } from 'node:path'
+import { TanStackRouterVite } from "@tanstack/router-plugin/vite"
+import { resolve } from "node:path"
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -18,7 +18,7 @@ export default defineConfig({
   // },
   resolve: {
     alias: {
-      '@': resolve(__dirname, './src'),
+      "@": resolve(__dirname, "./src"),
     },
   },
   server: {
@@ -28,15 +28,15 @@ export default defineConfig({
         changeOrigin: true,
         secure: false,
         configure: (proxy, _options) => {
-          proxy.on('error', (err, _req, _res) => {
-            console.log('error', err);
-          });
-        }
-      }
-    }
+          proxy.on("error", (err, _req, _res) => {
+            console.log("error", err)
+          })
+        },
+      },
+    },
   },
   build: {
     outDir: "dist",
-    sourcemap: false
-  }
+    sourcemap: false,
+  },
 })
