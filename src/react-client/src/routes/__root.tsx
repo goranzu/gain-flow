@@ -1,16 +1,17 @@
-import type { NavigateOptions, ToOptions } from "@tanstack/react-router"
+import { HeroUIProvider } from "@heroui/react"
+import type { QueryClient } from "@tanstack/react-query"
 import {
-  Outlet,
   createRootRouteWithContext,
+  Outlet,
   useRouter,
+  type NavigateOptions,
+  type ToOptions,
 } from "@tanstack/react-router"
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools"
 
-import TanStackQueryLayout from "../integrations/tanstack-query/layout.tsx"
-
 import Navigation from "@/components/navigation.tsx"
-import { HeroUIProvider } from "@heroui/react"
-import type { QueryClient } from "@tanstack/react-query"
+
+import TanStackQueryLayout from "../integrations/tanstack-query/layout.tsx"
 
 interface MyRouterContext {
   queryClient: QueryClient
