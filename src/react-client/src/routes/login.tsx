@@ -1,7 +1,8 @@
 import {createFileRoute} from '@tanstack/react-router'
 import {z} from "zod";
 import {useAppForm} from "@/hooks/demo.form.ts";
-import {Form} from '@heroui/react';
+import {Divider, Form, Link} from '@heroui/react';
+import {Card, CardBody, CardHeader} from "@heroui/card";
 
 export const Route = createFileRoute('/login')({
     component: LoginComponent,
@@ -29,40 +30,89 @@ function LoginComponent() {
     })
 
     return (
-        <div className="max-w-xl mx-auto p-4 sm:p-6 md:p-8 font-bold mt-12">
-            <h1 className="text-2xl">Login</h1>
-            <Form
-                onSubmit={(e) => {
-                    e.preventDefault()
-                    e.stopPropagation()
-                    form.handleSubmit()
-                }}
-                className="space-y-6 mt-8"
-            >
-                <form.AppField name="email">
-                    {(field) => <field.Input
-                        label="Email"
-                        type="email"
-                        isRequired
-                        labelPlacement="outside"
-                        placeholder="example@email.com"
-                        name="email"/>}
-                </form.AppField>
+        <div
+            className="mt-38 flex items-center justify-center">
+            <Card className="w-full max-w-md shadow-2xl">
+                <CardHeader className="flex flex-col gap-3 pb-6 pt-8 px-8">
+                    <div className="flex flex-col items-center text-center">
+                        <h1 className="text-3xl font-bold text-foreground">Welcome Back</h1>
+                        <p className="text-small text-default-500 mt-2">Sign in to your account to continue</p>
+                    </div>
+                </CardHeader>
+                <Divider/>
+                <CardBody className="px-8 py-6">
+                    <Form
+                        onSubmit={(e) => {
+                            e.preventDefault()
+                            e.stopPropagation()
+                            form.handleSubmit()
+                        }}
+                        className="space-y-6"
+                    >
+                        <form.AppField name="email">
+                            {(field) => <field.Input
+                                label="Email"
+                                type="email"
+                                isRequired
+                                labelPlacement="outside"
+                                placeholder="example@email.com"
+                                name="email"
+                                variant="bordered"
+                                size="lg"
+                                classNames={{
+                                    input: "text-base",
+                                    inputWrapper: "h-12"
+                                }}
+                            />}
+                        </form.AppField>
 
-                <form.AppField name="password">
-                    {(field) => <field.Input
-                        label="Password"
-                        type="password"
-                        isRequired
-                        labelPlacement="outside"
-                        placeholder="*******"
-                        name="password"/>}
-                </form.AppField>
+                        <form.AppField name="password">
+                            {(field) => <field.Input
+                                label="Password"
+                                type="password"
+                                isRequired
+                                labelPlacement="outside"
+                                placeholder="*******"
+                                name="password"
+                                variant="bordered"
+                                size="lg"
+                                classNames={{
+                                    input: "text-base",
+                                    inputWrapper: "h-12"
+                                }}
+                            />}
+                        </form.AppField>
 
-                <form.AppForm>
-                    <form.Button color="primary" type="submit">Submit</form.Button>
-                </form.AppForm>
-            </Form>
+                        <div className="flex w-full items-center justify-end text-small">
+                            <Link href="#" size="sm" className="text-primary hover:text-primary-600">Forgot
+                                Password?</Link>
+                        </div>
+
+                        <form.AppForm>
+                            <form.Button
+                                color="primary"
+                                type="submit"
+                                size="lg"
+                                className="w-full font-semibold h-12"
+                                radius="lg"
+                            >
+                                Sign In
+                            </form.Button>
+                        </form.AppForm>
+
+                        <div className="text-center w-full text-small text-default-500">
+                            Don't have an account?{" "}
+                            <Link
+                                href="/register"
+                                size="sm"
+                                className="text-primary hover:text-primary-600 font-medium"
+                            >
+                                Sign up
+                            </Link>
+                        </div>
+                    </Form>
+                </CardBody>
+            </Card>
         </div>
     )
 }
