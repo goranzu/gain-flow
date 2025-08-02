@@ -29,6 +29,7 @@ const config = {
   ],
   importOrderParserPlugins: ["typescript", "jsx", "decorators-legacy"],
   importOrderTypeScriptVersion: "5.0.0",
+  ignorePatterns: ["src/routeTree.gen.ts"],
 }
 
 export default config
