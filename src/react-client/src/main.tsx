@@ -33,6 +33,11 @@ declare module "@tanstack/react-router" {
 
 function InnerApp() {
   const auth = useAuth()
+
+  if (auth.isLoading) {
+    return
+  }
+
   return <RouterProvider router={router} context={{ auth }} />
 }
 

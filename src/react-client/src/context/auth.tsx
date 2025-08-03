@@ -1,4 +1,10 @@
-import { createContext, useCallback, useContext, useState } from "react"
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from "react"
 
 export interface User {
   id: string
@@ -8,7 +14,7 @@ export interface User {
 export interface AuthContext {
   isAuthenticated: boolean
   login: (email: string, password: string) => Promise<boolean>
-  getMe: () => Promise<void>
+  // getMe: () => Promise<void>
   register: (
     email: string,
     password: string,
@@ -17,6 +23,8 @@ export interface AuthContext {
   logout: () => Promise<void>
   user: User | null
   serverError: string
+  isLoading: boolean
+  clearError?: () => void
 }
 
 const AuthContext = createContext<AuthContext | null>(null)
@@ -25,7 +33,8 @@ export function AuthProvider({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   const [user, setUser] = useState<User | null>(null)
-  const isAuthenticated = !!user
+  const [isLoading, setIsLoading] = useState(true)
+  const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [serverError, setServerError] = useState("")
 
   const headers = {
@@ -33,16 +42,50 @@ export function AuthProvider({
     "X-Requested-With": "XMLHttpRequest",
   }
 
-  const logout = useCallback(async () => {
-    const response = await fetch("/api/logout", {
-      method: "POST",
-      headers: {
-        ...headers,
-      },
-    })
+  useEffect(() => {
+    async function checkAuthStatus() {
+      setIsLoading(true)
+      try {
+        const response = await fetch("/api/me", {
+          method: "GET",
+          headers: {
+            ...headers,
+          },
+        })
+        if (response.ok) {
+          const data = await response.json()
+          setUser(data)
+          setIsAuthenticated(true)
+        } else {
+          setUser(null)
+          setIsAuthenticated(false)
+        }
+      } catch {
+        setUser(null)
+        setIsAuthenticated(false)
+      } finally {
+        setIsLoading(false)
+      }
+    }
 
-    if (response.ok) {
+    void checkAuthStatus()
+  }, [])
+
+  const logout = useCallback(async () => {
+    try {
+      const response = await fetch("/api/logout", {
+        method: "POST",
+        headers: {
+          ...headers,
+        },
+      })
+      if (response.ok) {
+        setUser(null)
+        setIsAuthenticated(false)
+      }
+    } catch {
       setUser(null)
+      setIsAuthenticated(false)
     }
   }, [])
 
@@ -60,7 +103,8 @@ export function AuthProvider({
 
       if (response.ok) {
         const data = await response.json()
-        setUser({ id: data.id, email: data.email })
+        setUser(data)
+        setIsAuthenticated(true)
         return true
       }
 
@@ -75,6 +119,7 @@ export function AuthProvider({
       }
     } catch {
       setServerError("Login failed. Please try again.")
+      setIsAuthenticated(false)
       return false
     }
   }, [])
@@ -101,22 +146,16 @@ export function AuthProvider({
     [],
   )
 
-  const getMe = useCallback(async () => {
-    const response = await fetch("/api/me", {
-      method: "GET",
-      headers: {
-        ...headers,
-      },
-    })
-
-    if (response.ok) {
-      const data = await response.json()
-      setUser({ id: data.id, email: data.email })
-      return
-    }
-
-    setUser(null)
-  }, [])
+  // const getMe = useCallback(async () => {
+  //   try {
+  //     const response = await fetch("/api/me", {
+  //       method: "GET",
+  //       headers: {
+  //         ...headers,
+  //       },
+  //     })
+  //   } catch {}
+  // }, [])
 
   const contextData = {
     isAuthenticated,
@@ -125,7 +164,8 @@ export function AuthProvider({
     logout,
     register,
     serverError,
-    getMe,
+    // getMe,
+    isLoading,
   }
 
   return (

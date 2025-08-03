@@ -14,7 +14,7 @@ export default function Navigation() {
         <p className="font-bold text-inherit">GainFlow</p>
       </NavbarBrand>
       <NavbarContent justify="end">
-        <NavbarItem className="hidden lg:flex">
+        <NavbarItem className="flex">
           <Link href="/login">Login</Link>
         </NavbarItem>
         <NavbarItem>

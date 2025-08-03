@@ -8,6 +8,9 @@ import { useAppForm } from "@/hooks/form.ts"
 
 export const Route = createFileRoute("/login")({
   component: LoginComponent,
+  validateSearch: z.object({
+    redirect: z.string().optional().catch(""),
+  }),
 })
 
 const schema = z.object({
@@ -17,7 +20,10 @@ const schema = z.object({
 
 function LoginComponent() {
   const { login, serverError } = useAuth()
+  const navigate = Route.useNavigate()
+  const search = Route.useSearch()
   const router = useRouter()
+
   const form = useAppForm({
     defaultValues: {
       email: "",
@@ -29,7 +35,8 @@ function LoginComponent() {
     onSubmit: async ({ value }) => {
       const success = await login(value.email, value.password)
       if (success) {
-        void router.navigate("/dashboard")
+        await router.invalidate()
+        await navigate({ to: search.redirect ?? "/dashboard" })
       }
     },
   })

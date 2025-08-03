@@ -1,4 +1,4 @@
-import type { AuthContext } from "@/context/auth.tsx"
+import { type AuthContext } from "@/context/auth.tsx"
 import { HeroUIProvider } from "@heroui/react"
 import type { QueryClient } from "@tanstack/react-query"
 import {
@@ -29,6 +29,7 @@ declare module "@react-types/shared" {
 export const Route = createRootRouteWithContext<MyRouterContext>()({
   component: () => {
     let router = useRouter()
+
     return (
       <HeroUIProvider
         navigate={(to, options) => router.navigate({ to, ...options })}
