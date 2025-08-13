@@ -19,7 +19,7 @@ const schema = z.object({
 })
 
 function LoginComponent() {
-  const { login, serverError } = useAuth()
+  const { login, error } = useAuth()
   const navigate = Route.useNavigate()
   const search = Route.useSearch()
   const router = useRouter()
@@ -154,9 +154,9 @@ function LoginComponent() {
               </Link>
             </div>
           </Form>
-          {serverError.length > 0 && (
+          {error && error.length > 0 && (
             <p className="text-small text-danger mt-4 text-center">
-              {serverError}
+              {error}
             </p>
           )}
         </CardBody>

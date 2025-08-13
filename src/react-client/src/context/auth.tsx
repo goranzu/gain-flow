@@ -6,15 +6,18 @@ import {
   useState,
 } from "react"
 
+import { api } from "@/lib/api.ts"
+
 export interface User {
   id: string
   email: string
 }
 
 export interface AuthContext {
-  isAuthenticated: boolean
+  loading: boolean
+  bootstrapping: boolean
   login: (email: string, password: string) => Promise<boolean>
-  // getMe: () => Promise<void>
+  getMe: () => Promise<User | null>
   register: (
     email: string,
     password: string,
@@ -22,9 +25,8 @@ export interface AuthContext {
   ) => Promise<void>
   logout: () => Promise<void>
   user: User | null
-  serverError: string
-  isLoading: boolean
   clearError?: () => void
+  error?: string | null
 }
 
 const AuthContext = createContext<AuthContext | null>(null)
@@ -33,139 +35,86 @@ export function AuthProvider({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   const [user, setUser] = useState<User | null>(null)
-  const [isLoading, setIsLoading] = useState(true)
-  const [isAuthenticated, setIsAuthenticated] = useState(false)
-  const [serverError, setServerError] = useState("")
+  const [loading, setLoading] = useState(false)
+  const [bootstrapping, setBootstrapping] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
-  const headers = {
-    "Content-Type": "application/json",
-    "X-Requested-With": "XMLHttpRequest",
-  }
-
-  useEffect(() => {
-    async function checkAuthStatus() {
-      setIsLoading(true)
-      try {
-        const response = await fetch("/api/me", {
-          method: "GET",
-          headers: {
-            ...headers,
-          },
-        })
-        if (response.ok) {
-          const data = await response.json()
-          setUser(data)
-          setIsAuthenticated(true)
-        } else {
-          setUser(null)
-          setIsAuthenticated(false)
-        }
-      } catch {
-        setUser(null)
-        setIsAuthenticated(false)
-      } finally {
-        setIsLoading(false)
-      }
-    }
-
-    void checkAuthStatus()
+  const refresh = useCallback(async () => {
+    const data = await getMe()
+    setUser(data)
   }, [])
 
+  useEffect(() => {
+    ;(async () => {
+      setBootstrapping(true)
+      await refresh()
+      setBootstrapping(false)
+    })()
+  }, [refresh])
+
   const logout = useCallback(async () => {
-    try {
-      const response = await fetch("/api/logout", {
-        method: "POST",
-        headers: {
-          ...headers,
-        },
-      })
-      if (response.ok) {
-        setUser(null)
-        setIsAuthenticated(false)
-      }
-    } catch {
-      setUser(null)
-      setIsAuthenticated(false)
+    setLoading(true)
+    const response = await api.post("/api/logout")
+    setUser(null)
+    setLoading(false)
+    if (!response.success) {
+      setError(response.error || "Logout failed. Please try again.")
     }
   }, [])
 
   const login = useCallback(async (email: string, password: string) => {
-    setServerError("")
-
-    try {
-      const response = await fetch("/api/login", {
-        method: "POST",
-        body: JSON.stringify({ email, password }),
-        headers: {
-          ...headers,
-        },
-      })
-
-      if (response.ok) {
-        const data = await response.json()
-        setUser(data)
-        setIsAuthenticated(true)
-        return true
-      }
-
-      if (response.status === 400) {
-        const data = await response.json()
-        const errorMessage = data.detail as string
-        setServerError(errorMessage)
-        return false
-      } else {
-        setServerError("Login failed. Please try again.")
-        return false
-      }
-    } catch {
-      setServerError("Login failed. Please try again.")
-      setIsAuthenticated(false)
-      return false
+    setError(null)
+    setLoading(true)
+    const response = await api.post("/api/login", { email, password })
+    if (response.success) {
+      await refresh()
+    } else {
+      setError(response.error || "Login failed. Please try again.")
     }
+
+    setLoading(false)
+    return response.success
   }, [])
 
   const register = useCallback(
     async (email: string, password: string, confirmPassword: string) => {
-      setServerError("")
-      const response = await fetch("/api/register", {
-        method: "POST",
-        body: JSON.stringify({ email, password, confirmPassword }),
-        headers: {
-          ...headers,
-        },
+      setError(null)
+      setLoading(true)
+      const response = await api.post("/api/register", {
+        email,
+        password,
+        confirmPassword,
       })
-
-      if (response.ok) {
-        // send to protected dashboard page
+      if (response.success) {
+        await refresh()
+      } else {
+        setError(response.error || "Registration failed. Please try again.")
       }
 
-      const data = await response.json()
-      const errorMessage = data.detail as string
-      setServerError(errorMessage)
+      setLoading(false)
     },
     [],
   )
 
-  // const getMe = useCallback(async () => {
-  //   try {
-  //     const response = await fetch("/api/me", {
-  //       method: "GET",
-  //       headers: {
-  //         ...headers,
-  //       },
-  //     })
-  //   } catch {}
-  // }, [])
+  const getMe = useCallback(async () => {
+    setLoading(true)
+    const response = await api.get<User>("/api/me")
+    setLoading(false)
+    if (response.success && response.data) {
+      return response.data
+    }
+    return null
+  }, [])
 
   const contextData = {
-    isAuthenticated,
     user,
     login,
     logout,
     register,
-    serverError,
-    // getMe,
-    isLoading,
+    getMe,
+    loading,
+    bootstrapping,
+    error
   }
 
   return (

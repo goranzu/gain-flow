@@ -9,7 +9,15 @@ import {
 
 export const Route = createFileRoute("/_auth")({
   beforeLoad: ({ context, location }) => {
-    if (!context.auth.isAuthenticated) {
+    if(context.auth.bootstrapping) {
+      return (
+        <div className="h-full p-2 flex items-center justify-center">
+          <h1 className="text-2xl">Loading...</h1>
+        </div>
+      )
+    }
+
+    if (!context.auth.user) {
       throw redirect({
         to: "/login",
         search: {
