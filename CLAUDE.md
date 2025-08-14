@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-GainFlow is a full-stack fitness application with a .NET 9 Web API backend and a React frontend built with TanStack Router. The application focuses on exercise management and user authentication with plans for workout tracking and progress monitoring.
+GainFlow is a full-stack fitness application with a .NET 9 Web API backend and a React frontend built with Vite. The application focuses on exercise management, user authentication, workout tracking, and progress monitoring. The frontend uses HeroUI for modern, accessible UI components.
 
 ## Development Commands
 
@@ -18,12 +18,10 @@ GainFlow is a full-stack fitness application with a .NET 9 Web API backend and a
 
 ### Frontend (React Client)
 Navigate to `src/react-client/` for all frontend commands:
-- **Development**: `npm run dev` (runs on port 3000)
+- **Development**: `npm run dev` (runs on port 5173)
 - **Build**: `npm run build`
-- **Test**: `npm run test`
+- **Preview**: `npm run preview`
 - **Lint**: `npm run lint`
-- **Format**: `npm run format:write`
-- **Check (format + lint)**: `npm run check`
 
 ## Architecture Overview
 
@@ -37,12 +35,13 @@ Navigate to `src/react-client/` for all frontend commands:
 - **Error Handling**: Global exception middleware
 
 ### Frontend Structure
-- **TanStack Router**: File-based routing with type-safe navigation
-- **TanStack Query**: Server state management and caching
-- **TanStack Form**: Form state management with validation
-- **HeroUI + Tailwind**: Component library and styling
-- **Authentication**: Context-based auth state with cookie sessions
-- **Testing**: Vitest with React Testing Library
+- **React 19**: Latest React with modern features and hooks
+- **Vite**: Fast build tool with hot module replacement
+- **TypeScript**: Full type safety with strict configuration
+- **HeroUI**: Modern React UI library with Tailwind CSS integration
+- **React Router**: Client-side routing with nested layouts
+- **ESLint & Prettier**: Code linting and formatting
+- **Kebab-case Naming**: All files use kebab-case convention (e.g., `user-profile.tsx`)
 
 ### Key Architectural Patterns
 
@@ -52,15 +51,18 @@ Each feature follows a consistent pattern:
 - `{Feature}CommandValidator.cs` - FluentValidation rules
 - `{Feature}Endpoint.cs` - Minimal API endpoint registration
 
-#### Route Organization (Frontend)
-- `__root.tsx` - Root layout with navigation
-- `_auth.tsx` - Protected route layout
-- Route files use TanStack Router conventions for nested layouts and authentication
+#### Component Organization (Frontend)
+- `src/main.tsx` - Application entry point with React DOM rendering and HeroUIProvider
+- `src/app.tsx` - Main application component with routing configuration
+- `src/pages/` - Page components using kebab-case naming (login.tsx, register.tsx, etc.)
+- `src/components/` - Reusable components organized by type (layout, navigation)
+- Components use HeroUI components for consistent design and accessibility
 
 #### Authentication Flow
 - Backend uses ASP.NET Core Identity with cookie authentication
-- Frontend checks auth status on app load via `/api/me` endpoint
-- Protected routes automatically redirect to login when unauthenticated
+- Frontend has dedicated login (`/login`) and registration (`/register`) pages using HeroUI components
+- Forms include validation, loading states, and social login placeholders (Google, GitHub)
+- Authentication state management can be implemented using React context or state libraries
 
 ## Development Workflow
 
@@ -71,11 +73,12 @@ Each feature follows a consistent pattern:
 4. Add domain entities to `src/GainFlow.Api/Shared/Domain/Entities/`
 5. Configure EF mappings in `src/GainFlow.Api/Shared/Persistence/Configurations/`
 
-### Adding New Frontend Routes
-1. Create new route file in `src/react-client/src/routes/`
-2. TanStack Router auto-generates route tree in `routeTree.gen.ts`
-3. Use `useAuth()` hook for authentication state
-4. Implement data fetching with TanStack Query hooks
+### Adding New Frontend Components
+1. Create new component files in `src/react-client/src/components/` or feature-specific folders using kebab-case naming
+2. Use HeroUI components for consistent styling and accessibility
+3. Follow TypeScript conventions with proper prop types
+4. Use React hooks for state management and side effects
+5. Implement proper error handling and loading states with HeroUI's built-in states
 
 ### Database Changes
 - Always create EF migrations for schema changes
@@ -88,13 +91,23 @@ Each feature follows a consistent pattern:
 - Unit tests in `tests/GainFlow.Api.UnitTests/`
 - Integration tests in `tests/GainFlow.Api.IntegrationTests/`
 
-### Frontend
-- Component tests with Vitest and React Testing Library
-- Demo files prefixed with `demo.*` can be safely deleted
+### Frontend  
+- Testing framework not yet configured (ready for Vitest + React Testing Library)
+- ESLint and Prettier configured for code quality and consistent formatting
+- HeroUI components provide built-in accessibility and testing attributes
 
-## API Proxy Configuration
+## Development Configuration
 
-Frontend development server proxies `/api/*` requests to `http://localhost:5000` (the .NET API server).
+### Code Quality and Analysis
+- **SonarAnalyzer**: Enabled for C# code quality analysis
+- **Treat Warnings as Errors**: Enabled in Release builds for strict code quality
+- **Central Package Management**: All NuGet package versions managed in `Directory.Packages.props`
+- **ESLint & Prettier**: Configured for React and TypeScript best practices with automatic formatting
+- **HeroUI**: Provides consistent design system with accessibility built-in
+
+### API Integration
+- Frontend should make requests to `http://localhost:5000/api/*` during development
+- Configure proxy in Vite config if needed for CORS during development
 
 ## Build and Deployment
 
