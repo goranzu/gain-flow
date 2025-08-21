@@ -10,6 +10,8 @@ import {
 import { IconBrandGoogleFilled } from "@tabler/icons-react"
 import { z } from "zod"
 import { useAppForm } from "../hooks/create-form.ts"
+import { useAuth } from "../contexts/auth-context"
+import { useEffect } from "react"
 
 const schema = z.object({
 	email: z.email(),
@@ -19,6 +21,15 @@ const schema = z.object({
 
 export default function Login() {
 	const navigate = useNavigate()
+	const { login, isLoading, isAuthenticated, error, clearError } = useAuth()
+
+	// Redirect if already authenticated
+	useEffect(() => {
+		if (isAuthenticated) {
+			navigate("/")
+		}
+	}, [isAuthenticated, navigate])
+
 	const form = useAppForm({
 		defaultValues: {
 			email: "",
@@ -29,17 +40,11 @@ export default function Login() {
 			onChange: schema,
 		},
 		onSubmit: async ({ value }) => {
-			alert(JSON.stringify(value, null, 2))
-
 			try {
-				// Simulate API call
-				await new Promise((resolve) => setTimeout(resolve, 1000))
-				console.log("Login attempt:", value)
-
-				// In real app, handle authentication here
-				alert("Login successful!")
-				navigate("/")
+				await login(value.email, value.password)
+				// Navigation will happen automatically via the useEffect above
 			} catch (error) {
+				// Error is already handled in auth context
 				console.error("Login failed:", error)
 			}
 		},
@@ -68,6 +73,19 @@ export default function Login() {
 						<h3 className="text-lg font-medium">Sign in to your account</h3>
 					</CardHeader>
 					<CardBody className="flex flex-col space-y-6">
+						{error && (
+							<div className="p-3 rounded-md bg-danger-50 border border-danger-200">
+								{error.includes("\n") ? (
+									<ul className="text-sm text-danger-700 space-y-1">
+										{error.split("\n").map((errorLine, index) => (
+											<li key={index}>• {errorLine}</li>
+										))}
+									</ul>
+								) : (
+									<p className="text-sm text-danger-700">{error}</p>
+								)}
+							</div>
+						)}
 						<form
 							onSubmit={(e) => {
 								e.preventDefault()
@@ -84,7 +102,10 @@ export default function Login() {
 											placeholder="Enter your email"
 											required
 											variant="bordered"
-											onChange={(e) => field.handleChange(e.target.value)}
+											onChange={(e) => {
+												if (error) clearError()
+												field.handleChange(e.target.value)
+											}}
 											onBlur={field.handleBlur}
 											value={field.state.value}
 											classNames={{
@@ -103,7 +124,10 @@ export default function Login() {
 											placeholder="Enter your password"
 											required
 											variant="bordered"
-											onChange={(e) => field.handleChange(e.target.value)}
+											onChange={(e) => {
+												if (error) clearError()
+												field.handleChange(e.target.value)
+											}}
 											value={field.state.value}
 											onBlur={field.handleBlur}
 											classNames={{
@@ -134,19 +158,17 @@ export default function Login() {
 								</Link>
 							</div>
 
-							<form.Subscribe
-								selector={(state) => [state.canSubmit, state.isSubmitting]}
-							>
-								{([canSubmit, isSubmitting]) => (
+							<form.Subscribe selector={(state) => [state.canSubmit]}>
+								{([canSubmit]) => (
 									<form.Button
-										isDisabled={!canSubmit}
+										isDisabled={!canSubmit || isLoading}
 										type="submit"
 										color="primary"
 										size="lg"
 										className="w-full font-medium"
-										isLoading={isSubmitting}
+										isLoading={isLoading}
 									>
-										{isSubmitting ? "Signing in..." : "Sign in"}
+										{isLoading ? "Signing in..." : "Sign in"}
 									</form.Button>
 								)}
 							</form.Subscribe>
