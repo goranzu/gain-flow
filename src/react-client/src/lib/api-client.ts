@@ -117,11 +117,25 @@ export class ApiClient {
 		}
 	}
 
-	async get<T>(
+	async get<T, P = Record<string, string | number | boolean | undefined>>(
 		endpoint: string,
+		params?: P,
 		options?: RequestOptions
 	): Promise<ApiResult<T>> {
-		return this.makeRequest<T>(endpoint, { ...options, method: "GET" })
+		let url = endpoint
+		if (params) {
+			const searchParams = new URLSearchParams()
+			Object.entries(params).forEach(([key, value]) => {
+				if (value !== undefined && value !== null) {
+					searchParams.append(key, String(value))
+				}
+			})
+			const queryString = searchParams.toString()
+			if (queryString) {
+				url += `?${queryString}`
+			}
+		}
+		return this.makeRequest<T>(url, { ...options, method: "GET" })
 	}
 
 	async post<T>(
