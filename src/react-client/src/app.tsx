@@ -6,6 +6,7 @@ import { HeroUIProvider } from "@heroui/react"
 import Layout from "./components/layout/layout"
 import ProtectedRoute from "./components/protected-route"
 import { AuthProvider } from "./contexts/auth-context"
+import { ThemeProvider } from "./contexts/theme-context"
 import CreateExercise from "./pages/create-exercise"
 import ExerciseDetail from "./pages/exercise-detail"
 import Exercises from "./pages/exercises"
@@ -23,35 +24,43 @@ declare module "@react-types/shared" {
 	}
 }
 
-function App() {
+function AppContent() {
 	const navigate = useNavigate()
 
 	return (
-		<AuthProvider>
-			<HeroUIProvider navigate={navigate} useHref={useHref}>
-				<Routes>
-					<Route
-						path="/"
-						element={
-							<ProtectedRoute>
-								<Layout />
-							</ProtectedRoute>
-						}
-					>
-						<Route index element={<Home />} />
-						<Route path="programs" element={<Programs />} />
-						<Route path="exercises" element={<Exercises />} />
-						<Route path="exercises/:id" element={<ExerciseDetail />} />
-						<Route path="exercises/create" element={<CreateExercise />} />
-						<Route path="workouts" element={<Workouts />} />
-						<Route path="progress" element={<Progress />} />
-					</Route>
-					<Route path="/login" element={<Login />} />
-					<Route path="/register" element={<Register />} />
-					<Route path="*" element={<NotFound />} />
-				</Routes>
-			</HeroUIProvider>
-		</AuthProvider>
+		<HeroUIProvider navigate={navigate} useHref={useHref}>
+			<Routes>
+				<Route
+					path="/"
+					element={
+						<ProtectedRoute>
+							<Layout />
+						</ProtectedRoute>
+					}
+				>
+					<Route index element={<Home />} />
+					<Route path="programs" element={<Programs />} />
+					<Route path="exercises" element={<Exercises />} />
+					<Route path="exercises/:id" element={<ExerciseDetail />} />
+					<Route path="exercises/create" element={<CreateExercise />} />
+					<Route path="workouts" element={<Workouts />} />
+					<Route path="progress" element={<Progress />} />
+				</Route>
+				<Route path="/login" element={<Login />} />
+				<Route path="/register" element={<Register />} />
+				<Route path="*" element={<NotFound />} />
+			</Routes>
+		</HeroUIProvider>
+	)
+}
+
+function App() {
+	return (
+		<ThemeProvider>
+			<AuthProvider>
+				<AppContent />
+			</AuthProvider>
+		</ThemeProvider>
 	)
 }
 

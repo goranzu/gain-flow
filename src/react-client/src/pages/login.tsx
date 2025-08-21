@@ -59,10 +59,8 @@ export default function Login() {
 					<Link href="/" className="text-3xl font-bold">
 						GainFlow
 					</Link>
-					<h2 className="mt-6 text-3xl font-extrabold text-gray-900">
-						Welcome back
-					</h2>
-					<p className="mt-2 text-sm text-gray-600">
+					<h2 className="mt-6 text-3xl font-extrabold">Welcome back</h2>
+					<p className="mt-2 text-sm">
 						Don't have an account?{" "}
 						<Link href="/register" className="font-medium">
 							Sign up here

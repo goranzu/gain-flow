@@ -1,4 +1,4 @@
-import { Link } from "@heroui/react"
+import { Card, CardBody, CardFooter, CardHeader, Link } from "@heroui/react"
 
 export default function Home() {
 	return (
@@ -10,23 +10,29 @@ export default function Home() {
 			</p>
 
 			<div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-				<div className="p-6 rounded-lg">
-					<h3 className="text-xl font-semibold mb-3">Exercises</h3>
-					<p className="mb-4">Browse and manage your exercise database</p>
-					<Link href="/exercises">View Exercises →</Link>
-				</div>
+				<Card>
+					<CardHeader>Exercises</CardHeader>
+					<CardBody>Browse and manage your exercise database</CardBody>
+					<CardFooter>
+						<Link href="/exercises">View Exercises →</Link>
+					</CardFooter>
+				</Card>
 
-				<div className="p-6 rounded-lg">
-					<h3 className="text-xl font-semibold mb-3">Workouts</h3>
-					<p className="mb-4">Create and track your workout sessions</p>
-					<Link href="/workouts">View Workouts →</Link>
-				</div>
+				<Card>
+					<CardHeader>Workouts</CardHeader>
+					<CardBody>Create and track your workout sessions</CardBody>
+					<CardFooter>
+						<Link href="/exercises">View Workouts →</Link>
+					</CardFooter>
+				</Card>
 
-				<div className="p-6 rounded-lg">
-					<h3 className="text-xl font-semibold mb-3">Progress</h3>
-					<p className="mb-4">Monitor your fitness progress over time</p>
-					<Link href="/progress">View Progress →</Link>
-				</div>
+				<Card>
+					<CardHeader>Progress</CardHeader>
+					<CardBody>Monitor your fitness progress over time</CardBody>
+					<CardFooter>
+						<Link href="/exercises">View Progress →</Link>
+					</CardFooter>
+				</Card>
 			</div>
 		</div>
 	)

@@ -14,6 +14,7 @@ import {
 } from "@heroui/react"
 
 import { useAuth } from "../../contexts/auth-context.tsx"
+import { ThemeToggle } from "../theme-toggle"
 
 export default function Navigation() {
 	const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -57,6 +58,9 @@ export default function Navigation() {
 				))}
 			</NavbarContent>
 			<NavbarContent justify="end">
+				<NavbarItem>
+					<ThemeToggle />
+				</NavbarItem>
 				{isAuthenticated ? (
 					<NavbarItem>
 						<Button as={Link} color="primary" variant="flat" onPress={logout}>
