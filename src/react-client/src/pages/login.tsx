@@ -110,10 +110,6 @@ export default function Login() {
 											}}
 											onBlur={field.handleBlur}
 											value={field.state.value}
-											classNames={{
-												label: "text-gray-700",
-												input: "text-gray-900",
-											}}
 										/>
 									)}
 								</form.AppField>
@@ -132,10 +128,6 @@ export default function Login() {
 											}}
 											value={field.state.value}
 											onBlur={field.handleBlur}
-											classNames={{
-												label: "text-gray-700",
-												input: "text-gray-900",
-											}}
 										/>
 									)}
 								</form.AppField>

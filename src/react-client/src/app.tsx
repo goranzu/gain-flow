@@ -12,10 +12,10 @@ import Exercises from "./pages/exercises"
 import Home from "./pages/home"
 import Login from "./pages/login"
 import NotFound from "./pages/not-found"
+import Programs from "./pages/programs"
 import Progress from "./pages/progress"
 import Register from "./pages/register"
 import Workouts from "./pages/workouts"
-import Programs from "./pages/programs"
 
 declare module "@react-types/shared" {
 	interface RouterConfig {
