@@ -1,6 +1,8 @@
 import { type ReactNode } from "react"
 import { Navigate, useLocation } from "react-router-dom"
+
 import { Spinner } from "@heroui/react"
+
 import { useAuth } from "../contexts/auth-context"
 
 interface ProtectedRouteProps {

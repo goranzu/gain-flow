@@ -1,4 +1,5 @@
 import { Link } from "@heroui/react"
+
 import type { Exercise } from "../types/exercise"
 
 export type ExerciseCardProps = {
@@ -19,8 +20,12 @@ export default function ExerciseCard(
 				Secondary Muscle Groups: {exercise.secondaryMuscles.join(", ")}
 			</p>
 			<div className="flex gap-2">
-				<Link color="primary" href={`/exercises/${exercise.id}`}>View Details</Link>
-				<Link color="primary" href={`/exercises/${exercise.id}/edit`}>Edit</Link>
+				<Link color="primary" href={`/exercises/${exercise.id}`}>
+					View Details
+				</Link>
+				<Link color="primary" href={`/exercises/${exercise.id}/edit`}>
+					Edit
+				</Link>
 			</div>
 		</div>
 	)

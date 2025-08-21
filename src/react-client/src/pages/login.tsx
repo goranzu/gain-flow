@@ -1,4 +1,6 @@
+import { useEffect } from "react"
 import { useNavigate } from "react-router-dom"
+
 import {
 	Button,
 	Card,
@@ -9,9 +11,9 @@ import {
 } from "@heroui/react"
 import { IconBrandGoogleFilled } from "@tabler/icons-react"
 import { z } from "zod"
-import { useAppForm } from "../hooks/create-form.ts"
+
 import { useAuth } from "../contexts/auth-context"
-import { useEffect } from "react"
+import { useAppForm } from "../hooks/create-form.ts"
 
 const schema = z.object({
 	email: z.email(),

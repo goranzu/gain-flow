@@ -1,24 +1,24 @@
 import { useEffect } from "react"
 import { useNavigate } from "react-router-dom"
+
 import {
 	Button,
 	Card,
 	CardBody,
 	CardHeader,
 	Divider,
-	Link
+	Link,
 } from "@heroui/react"
+import { IconBrandGoogleFilled } from "@tabler/icons-react"
 import { z } from "zod"
+
 import { useAuth } from "../contexts/auth-context"
 import { useAppForm } from "../hooks/create-form"
-import { IconBrandGoogleFilled } from "@tabler/icons-react"
 
 const schema = z
 	.object({
 		email: z.email("Please enter a valid email address"),
-		password: z
-			.string()
-			.min(6, "Password must be at least 6 characters"),
+		password: z.string().min(6, "Password must be at least 6 characters"),
 		confirmPassword: z.string(),
 	})
 	.refine((data) => data.password === data.confirmPassword, {

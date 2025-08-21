@@ -1,19 +1,20 @@
-import { Routes, Route, useNavigate, useHref } from "react-router-dom"
+import type { NavigateOptions } from "react-router"
+import { Route, Routes, useHref, useNavigate } from "react-router-dom"
+
+import { HeroUIProvider } from "@heroui/react"
+
 import Layout from "./components/layout/layout"
 import ProtectedRoute from "./components/protected-route"
-import Home from "./pages/home"
-import Exercises from "./pages/exercises"
-import ExerciseDetail from "./pages/exercise-detail"
-import CreateExercise from "./pages/create-exercise"
-import Workouts from "./pages/workouts"
-import Progress from "./pages/progress"
-import Login from "./pages/login"
-import Register from "./pages/register"
-import NotFound from "./pages/not-found"
 import { AuthProvider } from "./contexts/auth-context"
-
-import type { NavigateOptions } from "react-router"
-import { HeroUIProvider } from "@heroui/react"
+import CreateExercise from "./pages/create-exercise"
+import ExerciseDetail from "./pages/exercise-detail"
+import Exercises from "./pages/exercises"
+import Home from "./pages/home"
+import Login from "./pages/login"
+import NotFound from "./pages/not-found"
+import Progress from "./pages/progress"
+import Register from "./pages/register"
+import Workouts from "./pages/workouts"
 
 declare module "@react-types/shared" {
 	interface RouterConfig {
