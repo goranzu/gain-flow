@@ -15,6 +15,7 @@ import NotFound from "./pages/not-found"
 import Progress from "./pages/progress"
 import Register from "./pages/register"
 import Workouts from "./pages/workouts"
+import Programs from "./pages/programs"
 
 declare module "@react-types/shared" {
 	interface RouterConfig {
@@ -38,6 +39,7 @@ function App() {
 						}
 					>
 						<Route index element={<Home />} />
+						<Route path="programs" element={<Programs />} />
 						<Route path="exercises" element={<Exercises />} />
 						<Route path="exercises/:id" element={<ExerciseDetail />} />
 						<Route path="exercises/create" element={<CreateExercise />} />
