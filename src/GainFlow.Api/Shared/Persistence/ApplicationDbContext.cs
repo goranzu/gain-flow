@@ -8,6 +8,14 @@ public sealed class ApplicationDbContext : DbContext
 {
     public DbSet<User> Users { get; set; }
     public DbSet<Exercise> Exercises { get; set; }
+    public DbSet<WorkoutProgram> WorkoutPrograms { get; set; }
+    public DbSet<ProgramWeek> ProgramWeeks { get; set; }
+    public DbSet<ProgramDay> ProgramDays { get; set; }
+    public DbSet<ProgramSetGroup> ProgramSetGroups { get; set; }
+    public DbSet<ProgramExercise> ProgramExercises { get; set; }
+    public DbSet<UserProgram> UserPrograms { get; set; }
+    public DbSet<WorkoutSession> WorkoutSessions { get; set; }
+    public DbSet<WorkoutSet> WorkoutSets { get; set; }
 
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
     {
