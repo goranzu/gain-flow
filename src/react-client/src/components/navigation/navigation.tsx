@@ -63,7 +63,12 @@ export default function Navigation() {
 				</NavbarItem>
 				{isAuthenticated ? (
 					<NavbarItem>
-						<Button as={Link} color="primary" variant="flat" onPress={logout}>
+						<Button
+							as={Link}
+							color="primary"
+							variant="flat"
+							onPress={() => void logout()}
+						>
 							Logout
 						</Button>
 					</NavbarItem>
@@ -99,7 +104,7 @@ export default function Navigation() {
 						color="danger"
 						href="#"
 						size="lg"
-						onPress={logout}
+						onPress={() => void logout()}
 					>
 						Log Out
 					</Link>

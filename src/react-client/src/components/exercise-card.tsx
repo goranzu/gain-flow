@@ -10,7 +10,7 @@ import { IconEye, IconPencil, IconWeight } from "@tabler/icons-react"
 
 import type { Exercise } from "../types/exercise"
 
-export type ExerciseCardProps = {
+export interface ExerciseCardProps {
 	exercise: Exercise
 }
 

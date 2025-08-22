@@ -43,7 +43,7 @@ export function ThemeToggle() {
 			<DropdownMenu
 				aria-label="Theme selection"
 				onAction={(key) => setTheme(key as string)}
-				selectedKeys={[theme as string]}
+				selectedKeys={[theme!]}
 				selectionMode="single"
 			>
 				<DropdownItem key="light" startContent={<IconSun size={16} />}>

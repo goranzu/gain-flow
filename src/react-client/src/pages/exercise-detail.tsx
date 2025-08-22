@@ -5,7 +5,7 @@ export default function ExerciseDetail() {
 
 	// Mock exercise data - in real app this would come from API
 	const exercise = {
-		id: parseInt(id || "1"),
+		id: parseInt(id ?? "1"),
 		name: "Push-ups",
 		category: "Bodyweight",
 		muscleGroup: "Chest",

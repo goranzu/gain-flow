@@ -28,6 +28,7 @@ function AppContent() {
 	const navigate = useNavigate()
 
 	return (
+		// eslint-disable-next-line @typescript-eslint/no-misused-promises
 		<HeroUIProvider navigate={navigate} useHref={useHref}>
 			<Routes>
 				<Route

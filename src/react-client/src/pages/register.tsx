@@ -33,7 +33,7 @@ export default function Register() {
 	// Redirect if already authenticated
 	useEffect(() => {
 		if (isAuthenticated) {
-			navigate("/")
+			void navigate("/")
 		}
 	}, [isAuthenticated, navigate])
 

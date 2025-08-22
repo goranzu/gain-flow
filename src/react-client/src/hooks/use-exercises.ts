@@ -19,7 +19,7 @@ export function useExercises(options: UseExercisesOptions = {}) {
 	}
 
 	return useQuery({
-		queryKey: ["exercises", page],
+		queryKey: ["exercises", queryParams],
 		queryFn: async () => {
 			const response = await apiClient.get<
 				ExercisesResponse,

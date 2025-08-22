@@ -22,24 +22,29 @@ Navigate to `src/react-client/` for all frontend commands:
 - **Build**: `npm run build`
 - **Preview**: `npm run preview`
 - **Lint**: `npm run lint`
+- **Format**: `npm run format` (write formatted code)
+- **Format Check**: `npm run format:check` (check formatting without changes)
 
 ## Architecture Overview
 
 ### Backend Structure
 - **Vertical Slice Architecture**: Features are organized by business capabilities under `src/GainFlow.Api/Features/`
-- **CQRS Pattern**: Commands and Queries are separated with dedicated handlers
+- **CQRS Pattern**: Commands and Queries are separated with dedicated handlers (`ICommandHandler<T>`, `IQueryHandler<T>`)
 - **Entity Framework**: Uses both ApplicationDbContext (business data) and IdentityApplicationDbContext (authentication)
 - **Database**: SQLite for development, PostgreSQL support configured
-- **Authentication**: ASP.NET Core Identity with cookie-based authentication
+- **Authentication**: ASP.NET Core Identity with cookie-based authentication and CurrentUserService
 - **Validation**: FluentValidation for request validation
-- **Error Handling**: Global exception middleware
+- **Error Handling**: Global exception middleware with status code pages
+- **Audit Trail**: AuditableEntity base class automatically tracks CreatedAt/UpdatedAt timestamps
 
 ### Frontend Structure
 - **React 19**: Latest React with modern features and hooks
-- **Vite**: Fast build tool with hot module replacement
+- **Vite**: Fast build tool with hot module replacement and API proxy to `http://localhost:5000`
 - **TypeScript**: Full type safety with strict configuration
 - **HeroUI**: Modern React UI library with Tailwind CSS integration
 - **React Router**: Client-side routing with nested layouts
+- **TanStack Query**: Server state management with React Query and devtools
+- **Context Providers**: AuthProvider and ThemeProvider for global state
 - **ESLint & Prettier**: Code linting and formatting
 - **Kebab-case Naming**: All files use kebab-case convention (e.g., `user-profile.tsx`)
 
@@ -52,17 +57,20 @@ Each feature follows a consistent pattern:
 - `{Feature}Endpoint.cs` - Minimal API endpoint registration
 
 #### Component Organization (Frontend)
-- `src/main.tsx` - Application entry point with React DOM rendering and HeroUIProvider
-- `src/app.tsx` - Main application component with routing configuration
+- `src/main.tsx` - Application entry point with React DOM rendering, QueryClientProvider, and React Router
+- `src/app.tsx` - Main application component with HeroUIProvider, context providers, and routing configuration
 - `src/pages/` - Page components using kebab-case naming (login.tsx, register.tsx, etc.)
 - `src/components/` - Reusable components organized by type (layout, navigation)
+- `src/contexts/` - React contexts for authentication and theme management
+- `src/hooks/` - Custom React hooks for data fetching and form handling
 - Components use HeroUI components for consistent design and accessibility
 
 #### Authentication Flow
 - Backend uses ASP.NET Core Identity with cookie authentication
 - Frontend has dedicated login (`/login`) and registration (`/register`) pages using HeroUI components
 - Forms include validation, loading states, and social login placeholders (Google, GitHub)
-- Authentication state management can be implemented using React context or state libraries
+- Authentication state management implemented using AuthContext with React context
+- Protected routes use ProtectedRoute component for authorization
 
 ## Development Workflow
 
@@ -106,8 +114,9 @@ Each feature follows a consistent pattern:
 - **HeroUI**: Provides consistent design system with accessibility built-in
 
 ### API Integration
-- Frontend should make requests to `http://localhost:5000/api/*` during development
-- Configure proxy in Vite config if needed for CORS during development
+- Frontend proxies `/api` requests to `http://localhost:5000` via Vite configuration
+- Uses TanStack Query for server state management with 5-minute stale time and devtools
+- API client located in `src/lib/api-client.ts`
 
 ## Build and Deployment
 

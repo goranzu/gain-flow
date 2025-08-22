@@ -16,7 +16,7 @@ export default function CreateExercise() {
 		// In real app, this would call an API
 		console.log("Creating exercise:", formData)
 		alert("Exercise created successfully!")
-		navigate("/exercises")
+		void navigate("/exercises")
 	}
 
 	const handleChange = (

@@ -73,8 +73,8 @@ export class ApiClient {
 
 						// Otherwise use detail field, falling back to title, then HTTP status
 						const errorMessage =
-							problemDetails.detail ||
-							problemDetails.title ||
+							(problemDetails.detail ??
+							problemDetails.title) ||
 							`HTTP ${response.status}`
 
 						return { data: null, error: errorMessage }

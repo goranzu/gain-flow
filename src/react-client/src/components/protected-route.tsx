@@ -19,7 +19,7 @@ export default function ProtectedRoute({
 
 	if (isLoading) {
 		return (
-			fallback || (
+			fallback ?? (
 				<div className="flex justify-center items-center min-h-screen">
 					<Spinner size="lg" />
 				</div>
