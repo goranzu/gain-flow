@@ -15,7 +15,7 @@ public sealed class GetWorkoutProgramsEndpoint : IEndpoint
     {
         endpointRouteBuilder.MapGet("/api/workout-programs", async (
                 ApplicationDbContext context,
-                [FromServices] CurrentUserService currentUserService,
+                ICurrentUserService currentUserService,
                 CancellationToken cancellationToken,
                 int page = 1,
                 int pageSize = 10,
@@ -47,7 +47,6 @@ public sealed class GetWorkoutProgramsEndpoint : IEndpoint
                         Description = wp.Description,
                         DurationWeeks = wp.DurationWeeks,
                         IsPublic = wp.IsPublic,
-                        CreatedByUser = new UserResponse(wp.CreatedByUser.Id, wp.CreatedByUser.Email),
                         CreatedAt = wp.CreatedAt
                     });
 

@@ -93,7 +93,7 @@ export interface WorkoutSet {
 
 export interface CreateWorkoutProgramRequest {
 	name: string
-	description: string
+	description?: string
 	durationWeeks: number
 	isPublic: boolean
 }

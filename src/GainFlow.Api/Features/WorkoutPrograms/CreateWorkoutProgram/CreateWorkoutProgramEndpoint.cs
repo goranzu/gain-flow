@@ -4,9 +4,8 @@ using GainFlow.Api.Shared.Abstractions;
 using GainFlow.Api.Shared.Domain.Entities;
 using GainFlow.Api.Shared.Extensions;
 using GainFlow.Api.Shared.Persistence;
-using GainFlow.Api.Shared.Persistence.Enums;
 using GainFlow.Api.Shared.Services;
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace GainFlow.Api.Features.WorkoutPrograms.CreateWorkoutProgram;
 
@@ -19,7 +18,7 @@ public sealed class CreateWorkoutProgramEndpoint : IEndpoint
                 CancellationToken cancellationToken,
                 ApplicationDbContext context,
                 IValidator<CreateWorkoutProgramCommand> validator,
-                [FromServices] CurrentUserService currentUserService) =>
+                ICurrentUserService currentUserService) =>
             {
                 ValidationResult? validationResult = validator.Validate(command);
                 if (!validationResult.IsValid)
@@ -28,19 +27,14 @@ public sealed class CreateWorkoutProgramEndpoint : IEndpoint
                     return Results.ValidationProblem(errors);
                 }
 
-                string currentUserId = currentUserService.UserId ?? throw new UnauthorizedAccessException();
+                string userId = await context.Users
+                    .Where(u => u.IdentityId == currentUserService.UserId)
+                    .Select(u => u.Id)
+                    .FirstAsync(cancellationToken);
+
                 string programId = $"wp_{Guid.CreateVersion7()}";
 
-                var workoutProgram = new WorkoutProgram
-                {
-                    Id = programId,
-                    Name = command.Name.Trim(),
-                    Description = command.Description?.Trim() ?? string.Empty,
-                    DurationWeeks = command.DurationWeeks,
-                    IsPublic = command.IsPublic,
-                    CreatedByUserId = currentUserId,
-                    Weeks = []
-                };
+                WorkoutProgram workoutProgram = CreateWorkoutProgramEntity(programId, command, userId);
 
                 await context.WorkoutPrograms.AddAsync(workoutProgram, cancellationToken);
                 await context.SaveChangesAsync(cancellationToken);
@@ -49,4 +43,16 @@ public sealed class CreateWorkoutProgramEndpoint : IEndpoint
             })
             .RequireAuthorization();
     }
+
+    private static WorkoutProgram CreateWorkoutProgramEntity(string programId, CreateWorkoutProgramCommand command,
+        string userId) => new()
+    {
+        Id = programId,
+        Name = command.Name.Trim(),
+        Description = command.Description?.Trim() ?? string.Empty,
+        DurationWeeks = command.DurationWeeks,
+        IsPublic = command.IsPublic,
+        CreatedByUserId = userId,
+        Weeks = []
+    };
 }

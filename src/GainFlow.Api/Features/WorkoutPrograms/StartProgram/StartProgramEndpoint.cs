@@ -21,7 +21,7 @@ public sealed class StartProgramEndpoint : IEndpoint
                 CancellationToken cancellationToken,
                 ApplicationDbContext context,
                 IValidator<StartProgramCommand> validator,
-                [FromServices] CurrentUserService currentUserService) =>
+                ICurrentUserService currentUserService) =>
             {
                 ValidationResult? validationResult = validator.Validate(command);
                 if (!validationResult.IsValid)

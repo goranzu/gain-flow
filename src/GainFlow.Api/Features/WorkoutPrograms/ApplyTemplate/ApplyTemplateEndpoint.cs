@@ -15,7 +15,7 @@ public sealed class ApplyTemplateEndpoint : IEndpoint
                 string programId,
                 CancellationToken cancellationToken,
                 ApplicationDbContext context,
-                [FromServices] CurrentUserService currentUserService) =>
+                ICurrentUserService currentUserService) =>
             {
                 string currentUserId = currentUserService.UserId ?? throw new UnauthorizedAccessException();
 

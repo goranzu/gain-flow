@@ -21,7 +21,7 @@ public sealed class ConfigureTemplateEndpoint : IEndpoint
                 CancellationToken cancellationToken,
                 ApplicationDbContext context,
                 IValidator<ConfigureTemplateCommand> validator,
-                [FromServices] CurrentUserService currentUserService) =>
+                ICurrentUserService currentUserService) =>
             {
                 ValidationResult? validationResult = validator.Validate(command);
                 if (!validationResult.IsValid)
