@@ -7,5 +7,5 @@ public sealed record WorkoutProgramResponse
     public string Description { get; init; } = string.Empty;
     public int DurationWeeks { get; init; }
     public bool IsPublic { get; init; }
-    public DateTimeOffset CreatedAt { get; init; }
+    public DateTime CreatedAt { get; init; }
 }

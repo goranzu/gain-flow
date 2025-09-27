@@ -4,7 +4,7 @@ namespace GainFlow.Api.Shared.Services;
 
 public interface ICurrentUserService
 {
-    public string? UserId { get; }
+    string? UserId { get; }
 }
 
 public sealed class CurrentUserService : ICurrentUserService

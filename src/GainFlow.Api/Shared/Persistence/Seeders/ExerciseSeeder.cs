@@ -206,7 +206,7 @@ public static class ExerciseSeeder
             Id = $"e_{Guid.CreateVersion7()}",
             Name = name,
             MuscleGroups = (List<ExerciseMuscleGroup>) [],
-            CreatedAt = DateTimeOffset.UtcNow,
+            CreatedAt = DateTime.UtcNow,
         };
 
         foreach (MuscleGroup primaryMuscleGroup in primaryMuscleGroups)
@@ -216,7 +216,7 @@ public static class ExerciseSeeder
                 Id = $"emg_{Guid.CreateVersion7()}",
                 MuscleGroup = primaryMuscleGroup,
                 Role = MuscleRole.Primary,
-                CreatedAt = DateTimeOffset.UtcNow,
+                CreatedAt = DateTime.UtcNow,
             });
         }
 
@@ -227,7 +227,7 @@ public static class ExerciseSeeder
                 Id = $"emg_{Guid.CreateVersion7()}",
                 MuscleGroup = secondaryMuscleGroup,
                 Role = MuscleRole.Secondary,
-                CreatedAt = DateTimeOffset.UtcNow,
+                CreatedAt = DateTime.UtcNow,
             });
         }
 

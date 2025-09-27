@@ -33,10 +33,10 @@ public sealed class ApplicationDbContext : DbContext
             switch (entity.State)
             {
                 case EntityState.Added:
-                    entity.Entity.CreatedAt = DateTimeOffset.UtcNow;
+                    entity.Entity.CreatedAt = DateTime.UtcNow;
                     break;
                 case EntityState.Modified:
-                    entity.Entity.UpdatedAt = DateTimeOffset.UtcNow;
+                    entity.Entity.UpdatedAt = DateTime.UtcNow;
                     break;
             }
         }
