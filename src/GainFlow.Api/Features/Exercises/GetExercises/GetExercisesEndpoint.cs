@@ -3,7 +3,6 @@ using GainFlow.Api.Shared.Contracts.Responses;
 using GainFlow.Api.Shared.Domain.Entities;
 using GainFlow.Api.Shared.Persistence.Queries;
 using GainFlow.Api.Shared.Persistence.Queries.Filters;
-using GainFlow.Api.Shared.Persistence.Queries.Modifiers;
 using GainFlow.Api.Shared.Persistence.Queries.Ordering;
 using GainFlow.Api.Shared.Persistence.Queries.Projections;
 using Microsoft.AspNetCore.Mvc;
@@ -22,10 +21,10 @@ public sealed class GetExercisesEndpoint : IEndpoint
                 int pageSize = 10) =>
             {
                 DataQuery<Exercise> query = new DataQuery<Exercise>()
-                    .Add(new WithoutTrackingModifier<Exercise>())
+                    .WithoutTracking()
                     .Add(new ExerciseByNameFilter(search))
                     .Add(new OrderByNameQuery())
-                    .Add(new PaginationModifier<Exercise>(page, pageSize));
+                    .Paginate(page, pageSize);
 
                 var projection = new ExerciseResponseProjection();
 

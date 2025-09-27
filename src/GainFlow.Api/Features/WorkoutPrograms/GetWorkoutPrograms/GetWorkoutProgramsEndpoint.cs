@@ -4,7 +4,6 @@ using GainFlow.Api.Shared.Domain.Entities;
 using GainFlow.Api.Shared.Persistence.Queries;
 using GainFlow.Api.Shared.Persistence.Queries.Filters;
 using GainFlow.Api.Shared.Persistence.Queries.Includes;
-using GainFlow.Api.Shared.Persistence.Queries.Modifiers;
 using GainFlow.Api.Shared.Persistence.Queries.Ordering;
 using GainFlow.Api.Shared.Persistence.Queries.Projections;
 using GainFlow.Api.Shared.Services;
@@ -28,7 +27,7 @@ public sealed class GetWorkoutProgramsEndpoint : IEndpoint
                 string currentUserId = currentUserService.UserId ?? throw new UnauthorizedAccessException();
 
                 DataQuery<WorkoutProgram> query = new DataQuery<WorkoutProgram>()
-                    .Add(new WithoutTrackingModifier<WorkoutProgram>())
+                    .WithoutTracking()
                     .Add(new WithCreatedByUserInclude())
                     .Add(new WorkoutProgramByPublicOrUserFilter(currentUserId))
                     .Add(new WorkoutProgramByNameFilter(search));
@@ -39,7 +38,7 @@ public sealed class GetWorkoutProgramsEndpoint : IEndpoint
                 }
 
                 query.Add(new OrderByCreatedAtDescendingQuery<WorkoutProgram>())
-                     .Add(new PaginationModifier<WorkoutProgram>(page, pageSize));
+                     .Paginate(page, pageSize);
 
                 var projection = new WorkoutProgramResponseProjection();
 
