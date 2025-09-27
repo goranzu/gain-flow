@@ -490,3 +490,5 @@ app.db-wal
 identity.db
 identity.db-shm
 identity.db-wal
+
+.svelte-kit/
