@@ -1,9 +1,9 @@
 using GainFlow.Api.Shared.Abstractions;
 using GainFlow.Api.Shared.Domain.Entities;
 
-namespace GainFlow.Api.Shared.Persistence.Queries;
+namespace GainFlow.Api.Shared.Persistence.Queries.Filters;
 
-public sealed class WorkoutProgramByPublicOrUser(string userId) : IDataQuery<WorkoutProgram, WorkoutProgram>
+public sealed class WorkoutProgramByPublicOrUserFilter(string userId) : IDataQuery<WorkoutProgram, WorkoutProgram>
 {
     public IQueryable<WorkoutProgram> Apply(IQueryable<WorkoutProgram> query)
     {

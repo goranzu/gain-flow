@@ -1,7 +1,8 @@
+using GainFlow.Api.Shared.Abstractions;
 using GainFlow.Api.Shared.Contracts.Responses;
 using GainFlow.Api.Shared.Domain.Entities;
 
-namespace GainFlow.Api.Shared.Abstractions;
+namespace GainFlow.Api.Shared.Persistence.Queries.Projections;
 
 public sealed class WorkoutProgramResponseProjection : IDataQuery<WorkoutProgram, WorkoutProgramResponse>
 {

@@ -2,6 +2,8 @@ using GainFlow.Api.Shared.Abstractions;
 using GainFlow.Api.Shared.Contracts.Responses;
 using GainFlow.Api.Shared.Domain.Entities;
 using GainFlow.Api.Shared.Persistence.Queries;
+using GainFlow.Api.Shared.Persistence.Queries.Filters;
+using GainFlow.Api.Shared.Persistence.Queries.Projections;
 
 namespace GainFlow.Api.Features.Exercises.GetExercise;
 
@@ -15,7 +17,7 @@ public class GetExerciseEndpoint : IEndpoint
                 IRepository<Exercise> exerciseRepository) =>
             {
                 DataQuery<Exercise> dataQuery = new DataQuery<Exercise>()
-                    .Add(new ExerciseById(exerciseId));
+                    .Add(new ExerciseByIdFilter(exerciseId));
                 var projection = new ExerciseResponseProjection();
 
                 ExerciseResponse? exercise = await exerciseRepository.FindAsync(dataQuery, projection, cancellationToken);

@@ -2,6 +2,11 @@ using GainFlow.Api.Shared.Abstractions;
 using GainFlow.Api.Shared.Contracts.Responses;
 using GainFlow.Api.Shared.Domain.Entities;
 using GainFlow.Api.Shared.Persistence.Queries;
+using GainFlow.Api.Shared.Persistence.Queries.Filters;
+using GainFlow.Api.Shared.Persistence.Queries.Includes;
+using GainFlow.Api.Shared.Persistence.Queries.Modifiers;
+using GainFlow.Api.Shared.Persistence.Queries.Ordering;
+using GainFlow.Api.Shared.Persistence.Queries.Projections;
 using GainFlow.Api.Shared.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -23,18 +28,18 @@ public sealed class GetWorkoutProgramsEndpoint : IEndpoint
                 string currentUserId = currentUserService.UserId ?? throw new UnauthorizedAccessException();
 
                 DataQuery<WorkoutProgram> query = new DataQuery<WorkoutProgram>()
-                    .Add(new WithoutTracking<WorkoutProgram>())
-                    .Add(new WithCreatedByUser())
-                    .Add(new WorkoutProgramByPublicOrUser(currentUserId))
-                    .Add(new WorkoutProgramByName(search));
+                    .Add(new WithoutTrackingModifier<WorkoutProgram>())
+                    .Add(new WithCreatedByUserInclude())
+                    .Add(new WorkoutProgramByPublicOrUserFilter(currentUserId))
+                    .Add(new WorkoutProgramByNameFilter(search));
 
                 if (isPublic.HasValue)
                 {
-                    query.Add(new WorkoutProgramByPublic(isPublic.Value));
+                    query.Add(new WorkoutProgramByPublicFilter(isPublic.Value));
                 }
 
-                query.Add(new OrderByCreatedAtDescending<WorkoutProgram>())
-                     .Add(new AsPaginated<WorkoutProgram>(page, pageSize));
+                query.Add(new OrderByCreatedAtDescendingQuery<WorkoutProgram>())
+                     .Add(new PaginationModifier<WorkoutProgram>(page, pageSize));
 
                 var projection = new WorkoutProgramResponseProjection();
 

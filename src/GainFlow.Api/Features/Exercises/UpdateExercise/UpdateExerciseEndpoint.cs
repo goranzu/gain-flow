@@ -4,6 +4,8 @@ using GainFlow.Api.Shared.Abstractions;
 using GainFlow.Api.Shared.Domain.Entities;
 using GainFlow.Api.Shared.Extensions;
 using GainFlow.Api.Shared.Persistence.Queries;
+using GainFlow.Api.Shared.Persistence.Queries.Filters;
+using GainFlow.Api.Shared.Persistence.Queries.Includes;
 
 namespace GainFlow.Api.Features.Exercises.UpdateExercise;
 
@@ -26,8 +28,8 @@ public sealed class UpdateExerciseEndpoint : IEndpoint
                     return Results.ValidationProblem(errors);
                 }
                 DataQuery<Exercise> query = new DataQuery<Exercise>()
-                    .Add(new ExerciseById(exerciseId))
-                    .Add(new WithMuscleGroups());
+                    .Add(new ExerciseByIdFilter(exerciseId))
+                    .Add(new WithMuscleGroupsInclude());
 
                 Exercise? exercise = await exerciseRepository.FindAsync(query, cancellationToken);
 

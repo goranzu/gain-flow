@@ -1,9 +1,9 @@
 using GainFlow.Api.Shared.Abstractions;
 using GainFlow.Api.Shared.Domain.Entities;
 
-namespace GainFlow.Api.Shared.Persistence.Queries;
+namespace GainFlow.Api.Shared.Persistence.Queries.Ordering;
 
-public sealed class OrderByCreatedAtDescending<T> : IDataQuery<T, T> where T : AuditableEntity
+public sealed class OrderByCreatedAtDescendingQuery<T> : IDataQuery<T, T> where T : AuditableEntity
 {
     public IQueryable<T> Apply(IQueryable<T> query)
     {

@@ -1,8 +1,8 @@
 using GainFlow.Api.Shared.Abstractions;
 
-namespace GainFlow.Api.Shared.Persistence.Queries;
+namespace GainFlow.Api.Shared.Persistence.Queries.Modifiers;
 
-public sealed class AsPaginated<T>(int page, int pageSize) : IDataQuery<T, T> where T : class
+public sealed class PaginationModifier<T>(int page, int pageSize) : IDataQuery<T, T> where T : class
 {
     public IQueryable<T> Apply(IQueryable<T> query)
     {

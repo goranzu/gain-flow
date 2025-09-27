@@ -3,6 +3,8 @@ using GainFlow.Api.Shared.Abstractions;
 using GainFlow.Api.Shared.Contracts.Responses;
 using GainFlow.Api.Shared.Domain.Entities;
 using GainFlow.Api.Shared.Persistence.Queries;
+using GainFlow.Api.Shared.Persistence.Queries.Filters;
+using GainFlow.Api.Shared.Persistence.Queries.Projections;
 
 namespace GainFlow.Api.Features.Users.GetMe;
 
@@ -22,7 +24,7 @@ public sealed class MeEndpoint : IEndpoint
                     }
 
                     DataQuery<User> query = new DataQuery<User>()
-                        .Add(new UserByIdentityId(userId));
+                        .Add(new UserByIdentityIdFilter(userId));
                     var projection = new UserResponseProjection();
 
                     UserResponse? userResponse = await userRepository.FindAsync(query, projection, cancellationToken);

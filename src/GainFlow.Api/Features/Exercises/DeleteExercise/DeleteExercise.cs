@@ -1,6 +1,7 @@
 using GainFlow.Api.Shared.Abstractions;
 using GainFlow.Api.Shared.Domain.Entities;
 using GainFlow.Api.Shared.Persistence.Queries;
+using GainFlow.Api.Shared.Persistence.Queries.Filters;
 
 namespace GainFlow.Api.Features.Exercises.DeleteExercise;
 
@@ -14,7 +15,7 @@ public sealed class DeleteExercise : IEndpoint
                 IRepository<Exercise> exerciseRepository) =>
             {
                 DataQuery<Exercise> query = new DataQuery<Exercise>()
-                    .Add(new ExerciseById(exerciseId));
+                    .Add(new ExerciseByIdFilter(exerciseId));
                 Exercise? exercise = await exerciseRepository.FindAsync(query, cancellationToken);
 
                 if (exercise is null)

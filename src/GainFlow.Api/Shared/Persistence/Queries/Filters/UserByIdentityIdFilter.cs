@@ -1,9 +1,9 @@
 using GainFlow.Api.Shared.Abstractions;
 using GainFlow.Api.Shared.Domain.Entities;
 
-namespace GainFlow.Api.Shared.Persistence.Queries;
+namespace GainFlow.Api.Shared.Persistence.Queries.Filters;
 
-public sealed class UserByIdentityId(string identityId) : IDataQuery<User, User>
+public sealed class UserByIdentityIdFilter(string identityId) : IDataQuery<User, User>
 {
     public IQueryable<User> Apply(IQueryable<User> query)
     {

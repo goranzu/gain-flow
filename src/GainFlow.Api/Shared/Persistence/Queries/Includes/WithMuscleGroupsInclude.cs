@@ -2,9 +2,9 @@ using GainFlow.Api.Shared.Abstractions;
 using GainFlow.Api.Shared.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace GainFlow.Api.Shared.Persistence.Queries;
+namespace GainFlow.Api.Shared.Persistence.Queries.Includes;
 
-public sealed class WithMuscleGroups : IDataQuery<Exercise, Exercise>
+public sealed class WithMuscleGroupsInclude : IDataQuery<Exercise, Exercise>
 {
     public IQueryable<Exercise> Apply(IQueryable<Exercise> query)
     {
