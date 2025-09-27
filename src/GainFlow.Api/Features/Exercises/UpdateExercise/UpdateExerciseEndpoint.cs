@@ -1,11 +1,9 @@
 using FluentValidation;
 using FluentValidation.Results;
-using GainFlow.Api.Shared;
 using GainFlow.Api.Shared.Abstractions;
 using GainFlow.Api.Shared.Domain.Entities;
 using GainFlow.Api.Shared.Extensions;
-using GainFlow.Api.Shared.Persistence;
-using Microsoft.EntityFrameworkCore;
+using GainFlow.Api.Shared.Persistence.Queries;
 
 namespace GainFlow.Api.Features.Exercises.UpdateExercise;
 
@@ -17,8 +15,8 @@ public sealed class UpdateExerciseEndpoint : IEndpoint
                 string exerciseId,
                 UpdateExerciseCommand command,
                 CancellationToken cancellationToken,
-                ApplicationDbContext applicationDbContext,
-                IValidator<UpdateExerciseCommand> validator
+                IValidator<UpdateExerciseCommand> validator,
+                IRepository<Exercise> exerciseRepository
             ) =>
             {
                 ValidationResult? validationResult = validator.Validate(command);
@@ -27,10 +25,11 @@ public sealed class UpdateExerciseEndpoint : IEndpoint
                     Dictionary<string, string[]> errors = validationResult.Errors.ToProblemDetailErrors();
                     return Results.ValidationProblem(errors);
                 }
+                DataQuery<Exercise> query = new DataQuery<Exercise>()
+                    .Add(new ExerciseById(exerciseId))
+                    .Add(new WithMuscleGroups());
 
-                Exercise? exercise = await applicationDbContext.Exercises
-                    .Include(e => e.MuscleGroups)
-                    .FirstOrDefaultAsync(e => e.Id == exerciseId, cancellationToken: cancellationToken);
+                Exercise? exercise = await exerciseRepository.FindAsync(query, cancellationToken);
 
                 if (exercise is null)
                 {
@@ -41,7 +40,7 @@ public sealed class UpdateExerciseEndpoint : IEndpoint
                 exercise.UpdatePrimaryMuscles(command.PrimaryMuscles);
                 exercise.UpdateSecondaryMuscles(command.SecondaryMuscles);
 
-                await applicationDbContext.SaveChangesAsync(cancellationToken);
+                await exerciseRepository.SaveAsync(cancellationToken);
                 return Results.NoContent();
             })
             .RequireAuthorization();

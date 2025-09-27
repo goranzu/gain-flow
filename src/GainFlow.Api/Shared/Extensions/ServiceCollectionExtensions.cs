@@ -67,15 +67,15 @@ public static class ServiceCollectionExtensions
         return services;
     }
 
-    public static IServiceCollection AddQueryHandlers(this IServiceCollection services)
-    {
-        services.Scan(scan =>
-            scan.FromAssembliesOf(typeof(Program))
-                .AddClasses(classes => classes.AssignableTo(typeof(IQueryHandler<,>)), publicOnly: false)
-                .AsImplementedInterfaces().WithScopedLifetime());
-
-        return services;
-    }
+    // public static IServiceCollection AddQueryHandlers(this IServiceCollection services)
+    // {
+    //     services.Scan(scan =>
+    //         scan.FromAssembliesOf(typeof(Program))
+    //             .AddClasses(classes => classes.AssignableTo(typeof(IQueryHandler<,>)), publicOnly: false)
+    //             .AsImplementedInterfaces().WithScopedLifetime());
+    //
+    //     return services;
+    // }
 
     public static IServiceCollection AddCommandHandlers(this IServiceCollection services)
     {

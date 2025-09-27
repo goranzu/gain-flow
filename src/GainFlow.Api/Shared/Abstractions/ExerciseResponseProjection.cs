@@ -3,7 +3,7 @@ using GainFlow.Api.Shared.Domain.Entities;
 
 namespace GainFlow.Api.Shared.Abstractions;
 
-public sealed class ExerciseResponseProjection : IQueryObject<Exercise, ExerciseResponse>
+public sealed class ExerciseResponseProjection : IDataQuery<Exercise, ExerciseResponse>
 {
     public IQueryable<ExerciseResponse> Apply(IQueryable<Exercise> query)
     {

@@ -1,10 +1,8 @@
-using System.Linq.Expressions;
 using GainFlow.Api.Shared.Abstractions;
 using GainFlow.Api.Shared.Contracts.Responses;
 using GainFlow.Api.Shared.Domain.Entities;
-using GainFlow.Api.Shared.Persistence;
+using GainFlow.Api.Shared.Persistence.Queries;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace GainFlow.Api.Features.Exercises.GetExercises;
 
@@ -14,22 +12,24 @@ public sealed class GetExercisesEndpoint : IEndpoint
     {
         endpointRouteBuilder.MapGet("/api/exercises", async (
                 CancellationToken cancellationToken,
-                ApplicationDbContext applicationDbContext,
                 [FromQuery(Name = "q")] string? search,
+                IRepository<Exercise> exerciseRepository,
                 int page = 1,
                 int pageSize = 10) =>
             {
-                IQueryable<ExerciseResponse> exercisesQuery = applicationDbContext.Exercises
-                    .AsNoTracking()
-                    .OrderBy(e => e.Name)
-                    .Include(ex => ex.MuscleGroups)
-                    .Where(ex => search == null || ex.Name.ToLower().Contains(search.ToLower()))
-                    .Select(ExerciseResponse.Projection());
+                DataQuery<Exercise> query = new DataQuery<Exercise>()
+                    .Add(new WithoutTracking())
+                    .Add(new ByName(search))
+                    .Add(new OrderByName())
+                    .Add(new AsPaginated(page, pageSize));
 
-                var response = await PaginatedResponse<ExerciseResponse>.Create(exercisesQuery,
-                    page,
-                    pageSize,
-                    cancellationToken);
+                var projection = new ExerciseResponseProjection();
+
+                int totalCount = await exerciseRepository.CountAsync(cancellationToken);
+                List<ExerciseResponse> exercises =
+                    await exerciseRepository.QueryPaginatedAsync(query, projection, cancellationToken);
+
+                var response = new PaginatedResponse<ExerciseResponse>(exercises, totalCount, page, pageSize);
 
                 return Results.Ok(response);
             })

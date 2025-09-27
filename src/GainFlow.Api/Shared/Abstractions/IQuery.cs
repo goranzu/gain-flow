@@ -1,3 +1,3 @@
-namespace GainFlow.Api.Shared.Abstractions;
-
-public interface IQuery<TResponse>;
+// namespace GainFlow.Api.Shared.Abstractions;
+//
+// public interface IQuery<TResponse>;

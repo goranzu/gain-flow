@@ -1,7 +1,6 @@
 using GainFlow.Api.Shared.Abstractions;
 using GainFlow.Api.Shared.Domain.Entities;
-using GainFlow.Api.Shared.Persistence;
-using Microsoft.EntityFrameworkCore;
+using GainFlow.Api.Shared.Persistence.Queries;
 
 namespace GainFlow.Api.Features.Exercises.DeleteExercise;
 
@@ -11,19 +10,19 @@ public sealed class DeleteExercise : IEndpoint
     {
         endpointRouteBuilder.MapDelete("/api/exercises/{exerciseId}", async (
                 string exerciseId,
-                ApplicationDbContext applicationDbContext,
-                CancellationToken cancellationToken) =>
+                CancellationToken cancellationToken,
+                IRepository<Exercise> exerciseRepository) =>
             {
-                Exercise? exercise = await applicationDbContext.Exercises
-                    .FirstOrDefaultAsync(e => e.Id == exerciseId, cancellationToken: cancellationToken);
+                DataQuery<Exercise> query = new DataQuery<Exercise>()
+                    .Add(new ExerciseById(exerciseId));
+                Exercise? exercise = await exerciseRepository.FindAsync(query, cancellationToken);
 
                 if (exercise is null)
                 {
                     return Results.NotFound();
                 }
 
-                applicationDbContext.Exercises.Remove(exercise);
-                await applicationDbContext.SaveChangesAsync(cancellationToken);
+                await exerciseRepository.Remove(exercise, cancellationToken);
                 return Results.NoContent();
             })
             .RequireAuthorization();

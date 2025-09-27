@@ -11,7 +11,6 @@ builder.Services
     .AddPersistence(builder.Configuration)
     .AddIdentity(builder.Environment)
     .AddValidatorsFromAssemblyContaining<Program>()
-    .AddQueryHandlers()
     .AddCommandHandlers()
     .AddApplicationServices()
     .AddErrorHandling()

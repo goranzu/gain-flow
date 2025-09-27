@@ -5,7 +5,7 @@ namespace GainFlow.Api.Shared.Contracts.Responses;
 
 public class PaginatedResponse<T> : ICollectionResponse<T>
 {
-    public List<T> Items { get; init; } = [];
+    public List<T> Items { get; init; }
     public int TotalCount { get; init; }
     public int PageSize { get; init; }
     public int PageNumber { get; init; }
@@ -13,29 +13,14 @@ public class PaginatedResponse<T> : ICollectionResponse<T>
     public bool HasPreviousPage { get; init; }
     public bool HasNextPage { get; init; }
 
-    public static async Task<PaginatedResponse<T>> Create(IQueryable<T> queryable,
-        int page,
-        int pageSize,
-        CancellationToken cancellationToken)
+    public PaginatedResponse(List<T> items, int totalCount, int page, int pageSize)
     {
-        int totalCount = await queryable.CountAsync(cancellationToken);
-
-        List<T> items = await queryable
-            .Skip((page - 1) * pageSize)
-            .Take(pageSize)
-            .ToListAsync(cancellationToken: cancellationToken);
-
-        int totalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
-
-        return new PaginatedResponse<T>
-        {
-            Items = items,
-            TotalCount = totalCount,
-            PageSize = pageSize,
-            PageNumber = page,
-            TotalPages = totalPages,
-            HasPreviousPage = page > 1,
-            HasNextPage = page < totalPages
-        };
+        Items = items;
+        TotalCount = totalCount;
+        TotalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
+        PageSize = pageSize;
+        PageNumber = page;
+        HasPreviousPage = page > 1;
+        HasNextPage = page < TotalPages;
     }
 }

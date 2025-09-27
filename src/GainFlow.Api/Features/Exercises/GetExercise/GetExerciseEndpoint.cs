@@ -14,10 +14,11 @@ public class GetExerciseEndpoint : IEndpoint
                 CancellationToken cancellationToken,
                 IRepository<Exercise> exerciseRepository) =>
             {
-                ExerciseQuery query = new ExerciseQuery()
-                    .ById(exerciseId);
+                DataQuery<Exercise> dataQuery = new DataQuery<Exercise>()
+                    .Add(new ExerciseById(exerciseId));
                 var projection = new ExerciseResponseProjection();
-                ExerciseResponse? exercise = await exerciseRepository.FindAsync(query, projection, cancellationToken);
+
+                ExerciseResponse? exercise = await exerciseRepository.FindAsync(dataQuery, projection, cancellationToken);
 
                 if (exercise is null)
                 {
