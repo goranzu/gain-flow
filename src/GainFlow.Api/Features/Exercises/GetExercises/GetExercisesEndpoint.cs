@@ -18,10 +18,10 @@ public sealed class GetExercisesEndpoint : IEndpoint
                 int pageSize = 10) =>
             {
                 DataQuery<Exercise> query = new DataQuery<Exercise>()
-                    .Add(new WithoutTracking())
+                    .Add(new WithoutTracking<Exercise>())
                     .Add(new ByName(search))
                     .Add(new OrderByName())
-                    .Add(new AsPaginated(page, pageSize));
+                    .Add(new AsPaginated<Exercise>(page, pageSize));
 
                 var projection = new ExerciseResponseProjection();
 

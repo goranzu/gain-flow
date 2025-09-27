@@ -1,11 +1,9 @@
 using GainFlow.Api.Shared.Abstractions;
 using GainFlow.Api.Shared.Contracts.Responses;
 using GainFlow.Api.Shared.Domain.Entities;
-using GainFlow.Api.Shared.Extensions;
-using GainFlow.Api.Shared.Persistence;
+using GainFlow.Api.Shared.Persistence.Queries;
 using GainFlow.Api.Shared.Services;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace GainFlow.Api.Features.WorkoutPrograms.GetWorkoutPrograms;
 
@@ -14,7 +12,7 @@ public sealed class GetWorkoutProgramsEndpoint : IEndpoint
     public void AddEndpoint(IEndpointRouteBuilder endpointRouteBuilder)
     {
         endpointRouteBuilder.MapGet("/api/workout-programs", async (
-                ApplicationDbContext context,
+                IRepository<WorkoutProgram> workoutProgramRepository,
                 ICurrentUserService currentUserService,
                 CancellationToken cancellationToken,
                 int page = 1,
@@ -24,37 +22,27 @@ public sealed class GetWorkoutProgramsEndpoint : IEndpoint
             {
                 string currentUserId = currentUserService.UserId ?? throw new UnauthorizedAccessException();
 
-                IQueryable<WorkoutProgram> query = context.WorkoutPrograms
-                    .Include(wp => wp.CreatedByUser)
-                    .Where(wp => wp.IsPublic || wp.CreatedByUserId == currentUserId);
-
-                if (!string.IsNullOrWhiteSpace(search))
-                {
-                    query = query.Where(wp => wp.Name.Contains(search) || wp.Description.Contains(search));
-                }
+                DataQuery<WorkoutProgram> query = new DataQuery<WorkoutProgram>()
+                    .Add(new WithoutTracking<WorkoutProgram>())
+                    .Add(new WithCreatedByUser())
+                    .Add(new WorkoutProgramByPublicOrUser(currentUserId))
+                    .Add(new WorkoutProgramByName(search));
 
                 if (isPublic.HasValue)
                 {
-                    query = query.Where(wp => wp.IsPublic == isPublic.Value);
+                    query.Add(new WorkoutProgramByPublic(isPublic.Value));
                 }
 
-                IQueryable<WorkoutProgramResponse> workoutProgramQuery = query
-                    .OrderByDescending(wp => wp.CreatedAt)
-                    .Select(wp => new WorkoutProgramResponse
-                    {
-                        Id = wp.Id,
-                        Name = wp.Name,
-                        Description = wp.Description,
-                        DurationWeeks = wp.DurationWeeks,
-                        IsPublic = wp.IsPublic,
-                        CreatedAt = wp.CreatedAt
-                    });
+                query.Add(new OrderByCreatedAtDescending<WorkoutProgram>())
+                     .Add(new AsPaginated<WorkoutProgram>(page, pageSize));
 
-                var response = await PaginatedResponse<WorkoutProgramResponse>.Create(
-                    workoutProgramQuery,
-                    page,
-                    pageSize,
-                    cancellationToken);
+                var projection = new WorkoutProgramResponseProjection();
+
+                int totalCount = await workoutProgramRepository.CountAsync(cancellationToken);
+                List<WorkoutProgramResponse> workoutPrograms =
+                    await workoutProgramRepository.QueryPaginatedAsync(query, projection, cancellationToken);
+
+                var response = new PaginatedResponse<WorkoutProgramResponse>(workoutPrograms, totalCount, page, pageSize);
 
                 return Results.Ok(response);
             })

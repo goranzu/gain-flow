@@ -1,12 +1,11 @@
 using GainFlow.Api.Shared.Abstractions;
-using GainFlow.Api.Shared.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace GainFlow.Api.Shared.Persistence.Queries;
 
-public sealed class WithoutTracking : IDataQuery<Exercise, Exercise>
+public sealed class WithoutTracking<T> : IDataQuery<T, T> where T : class
 {
-    public IQueryable<Exercise> Apply(IQueryable<Exercise> query)
+    public IQueryable<T> Apply(IQueryable<T> query)
     {
         return query.AsNoTracking();
     }
