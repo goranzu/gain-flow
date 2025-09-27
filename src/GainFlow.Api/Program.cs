@@ -1,4 +1,5 @@
 using FluentValidation;
+using GainFlow.Api.Shared.Abstractions;
 using GainFlow.Api.Shared.Extensions;
 using GainFlow.Api.Shared.Persistence;
 
@@ -17,6 +18,8 @@ builder.Services
     .AddSpa()
     .AddAuthorization()
     .AddAuthentication();
+
+builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 
 
 WebApplication app = builder.Build();

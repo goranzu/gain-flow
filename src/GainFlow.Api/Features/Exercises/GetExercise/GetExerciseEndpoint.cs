@@ -1,8 +1,7 @@
 using GainFlow.Api.Shared.Abstractions;
 using GainFlow.Api.Shared.Contracts.Responses;
 using GainFlow.Api.Shared.Domain.Entities;
-using GainFlow.Api.Shared.Persistence;
-using Microsoft.EntityFrameworkCore;
+using GainFlow.Api.Shared.Persistence.Queries;
 
 namespace GainFlow.Api.Features.Exercises.GetExercise;
 
@@ -12,12 +11,13 @@ public class GetExerciseEndpoint : IEndpoint
     {
         endpointRouteBuilder.MapGet("/api/exercises/{exerciseId}", async (
                 string exerciseId,
-                ApplicationDbContext applicationDbContext,
-                CancellationToken cancellationToken) =>
+                CancellationToken cancellationToken,
+                IRepository<Exercise> exerciseRepository) =>
             {
-                ExerciseResponse? exercise = await applicationDbContext.Exercises
-                    .Select(ExerciseResponse.Projection())
-                    .FirstOrDefaultAsync(ex => ex.Id == exerciseId, cancellationToken: cancellationToken);
+                ExerciseQuery query = new ExerciseQuery()
+                    .ById(exerciseId);
+                var projection = new ExerciseResponseProjection();
+                ExerciseResponse? exercise = await exerciseRepository.FindAsync(query, projection, cancellationToken);
 
                 if (exercise is null)
                 {
